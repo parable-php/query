@@ -2,6 +2,7 @@
 
 namespace Parable\Query;
 
+use Parable\Query\Condition\AbstractCondition;
 use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Condition\ValueCondition;
 
@@ -101,16 +102,23 @@ class Join
         return $this;
     }
 
-    public function whereCallable(callable $callable): self
+    public function onCallable(callable $callable): self
     {
         $this->onConditions[] = new CallableCondition($callable, 'AND');
 
         return $this;
     }
 
-    public function orWhereCallable(callable $callable): self
+    public function orOnCallable(callable $callable): self
     {
         $this->onConditions[] = new CallableCondition($callable, 'OR');
+
+        return $this;
+    }
+
+    public function onCondition(AbstractCondition $condition): self
+    {
+        $this->onConditions[] = $condition;
 
         return $this;
     }

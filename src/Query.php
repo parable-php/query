@@ -2,6 +2,7 @@
 
 namespace Parable\Query;
 
+use Parable\Query\Condition\AbstractCondition;
 use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Condition\ValueCondition;
 
@@ -186,6 +187,13 @@ class Query
     public function orWhereCallable(callable $callable): self
     {
         $this->whereConditions[] = new CallableCondition($callable, 'OR');
+
+        return $this;
+    }
+
+    public function whereCondition(AbstractCondition $condition): self
+    {
+        $this->whereConditions[] = $condition;
 
         return $this;
     }

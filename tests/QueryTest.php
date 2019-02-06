@@ -267,6 +267,27 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
+    public function testWhereCondition()
+    {
+        $query = new Query(Query::TYPE_SELECT, 'table', 't');
+
+        $query->whereCondition(new ValueCondition('table', 'user_id', '=', 'u.id'));
+        $query->whereCondition(new CallableCondition(function(Query $query) {
+            $query->where('test', '=', 1);
+        }));
+
+        $whereConditions = $query->getWhereConditions();
+
+        self::assertCount(2, $whereConditions);
+
+        /** @var CallableCondition $condition */
+        $valueCondition = $whereConditions[0];
+        $callableCondition = $whereConditions[1];
+
+        self::assertInstanceOf(ValueCondition::class, $valueCondition);
+        self::assertInstanceOf(CallableCondition::class, $callableCondition);
+    }
+
     public function testLimitAndOffset()
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');

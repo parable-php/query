@@ -115,11 +115,11 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertTrue($condition->isValueKey());
     }
 
-    public function testWhereCallable()
+    public function testOnCallable()
     {
         $join = new Join('table', 't');
 
-        $join->whereCallable(function(Query $query) {
+        $join->onCallable(function(Query $query) {
             return $query->getTableName();
         });
 
@@ -140,11 +140,11 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testOrWhereCallable()
+    public function testOrOnCallable()
     {
         $join = new Join('table', 't');
 
-        $join->orWhereCallable(function(Query $query) {
+        $join->orOnCallable(function(Query $query) {
             return $query->getTableName();
         });
 
@@ -163,5 +163,26 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertSame('query', $callable(Query::select('query', 'q')));
         self::assertSame(AbstractCondition::TYPE_OR, $condition->getType());
         self::assertFalse($condition->isValueKey());
+    }
+
+    public function testOnCondition()
+    {
+        $join = new Join('table', 't');
+
+        $join->onCondition(new ValueCondition('table', 'user_id', '=', 'u.id', AbstractCondition::TYPE_AND, true));
+        $join->onCondition(new CallableCondition(function(Query $query) {
+            $query->where('test', '=', 1);
+        }));
+
+        $onConditions = $join->getOnConditions();
+
+        self::assertCount(2, $onConditions);
+
+        /** @var CallableCondition $condition */
+        $valueCondition = $onConditions[0];
+        $callableCondition = $onConditions[1];
+
+        self::assertInstanceOf(ValueCondition::class, $valueCondition);
+        self::assertInstanceOf(CallableCondition::class, $callableCondition);
     }
 }
