@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Parable\Query;
 
@@ -299,6 +299,11 @@ class Query
     public function getValueSets(): array
     {
         return $this->valueSets;
+    }
+
+    public function hasValueSets(): bool
+    {
+        return count($this->getValueSets()) > 0;
     }
 
     protected function createValueCondition(

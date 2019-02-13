@@ -35,10 +35,16 @@ trait SupportsValuesTrait
         $parts = [];
 
         foreach ($valueSet->getValues() as $key => $value) {
+            if ($value === null) {
+                $cleanValue = 'NULL';
+            } else {
+                $cleanValue = $this->quote($value);
+            }
+
             $parts[] = sprintf(
                 '%s = %s',
                 $this->quoteIdentifier($key),
-                $this->quote($value)
+                $cleanValue
             );
         }
 

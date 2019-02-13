@@ -5,9 +5,9 @@ namespace Parable\Query\Tests;
 use Parable\Query\Condition\AbstractCondition;
 use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Condition\ValueCondition;
-use Parable\Query\Exception;
 use Parable\Query\Join;
 use Parable\Query\Query;
+use Parable\Query\ValueSet;
 
 class QueryTest extends \PHPUnit\Framework\TestCase
 {
@@ -384,5 +384,16 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         $joinFromQuery = $query->getJoinsByType(Query::JOIN_TYPE_LEFT)[0];
 
         self::assertSame($join, $joinFromQuery);
+    }
+
+    public function testHasValueSets()
+    {
+        $query = new Query(Query::TYPE_UPDATE, 'table', 't');
+
+        self::assertFalse($query->hasValueSets());
+
+        $query->addValueSet(new ValueSet([]));
+
+        self::assertTrue($query->hasValueSets());
     }
 }

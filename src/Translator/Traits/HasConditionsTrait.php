@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Parable\Query\Translator\Traits;
 
-use Parable\Query\Condition\AbstractCondition;
 use Parable\Query\Condition\ValueCondition;
 use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Exception;

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Parable\Query;
 
@@ -33,6 +33,11 @@ class ValueSet
     public function getValues(): array
     {
         return $this->values;
+    }
+
+    public function hasValues(): bool
+    {
+        return count($this->values) > 0;
     }
 
     public function getKeys(): array

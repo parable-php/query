@@ -44,6 +44,17 @@ class ValueSetTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
+    public function testHasValues()
+    {
+        $valueSet = new ValueSet([]);
+
+        self::assertFalse($valueSet->hasValues());
+
+        $valueSet->addValue('test', 'true');
+
+        self::assertTrue($valueSet->hasValues());
+    }
+
     public function dpInvalidValuesForSet(): array
     {
         return [

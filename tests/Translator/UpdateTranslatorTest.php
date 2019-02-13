@@ -114,4 +114,17 @@ class UpdateTranslatorTest extends \PHPUnit\Framework\TestCase
 
         $this->translator->translate($query);
     }
+
+    public function testNullValueIsParsedCorrectly()
+    {
+        $query = Query::update('table', 't');
+        $query->addValueSet(new ValueSet([
+            'username' => null,
+        ]));
+
+        self::assertSame(
+            $this->translator->translate($query),
+            'UPDATE `table` `t` SET `username` = NULL'
+        );
+    }
 }

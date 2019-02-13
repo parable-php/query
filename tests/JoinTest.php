@@ -5,7 +5,6 @@ namespace Parable\Query\Tests;
 use Parable\Query\Condition\AbstractCondition;
 use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Condition\ValueCondition;
-use Parable\Query\Exception;
 use Parable\Query\Join;
 use Parable\Query\Query;
 
@@ -71,7 +70,6 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertSame('t.username', $condition->getValue());
         self::assertTrue($condition->isValueKey());
     }
-
 
     public function testOrOnWithValueCondition()
     {
@@ -184,5 +182,33 @@ class JoinTest extends \PHPUnit\Framework\TestCase
 
         self::assertInstanceOf(ValueCondition::class, $valueCondition);
         self::assertInstanceOf(CallableCondition::class, $callableCondition);
+    }
+
+    public function testOnNullCondition()
+    {
+        $join = new Join('table', 't');
+
+        $join->onNull('test');
+
+        /** @var ValueCondition $onCondition */
+        $onCondition = $join->getOnConditions()[0];
+
+        self::assertInstanceOf(ValueCondition::class, $onCondition);
+        self::assertSame('IS NULL', $onCondition->getComparator());
+        self::assertNull($onCondition->getValue());
+    }
+
+    public function testOnNotNullCondition()
+    {
+        $join = new Join('table', 't');
+
+        $join->onNotNull('test');
+
+        /** @var ValueCondition $onCondition */
+        $onCondition = $join->getOnConditions()[0];
+
+        self::assertInstanceOf(ValueCondition::class, $onCondition);
+        self::assertSame('IS NOT NULL', $onCondition->getComparator());
+        self::assertNull($onCondition->getValue());
     }
 }
