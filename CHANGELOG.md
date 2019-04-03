@@ -1,5 +1,12 @@
 # Parable PHP Query
 
+## 0.1.3
+
+_Changes_
+
+- Code style fixes.
+- Fixed typo in exception.
+
 ## 0.1.2
 
 _Changes_

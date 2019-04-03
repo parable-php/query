@@ -34,7 +34,7 @@ class Builder
             return $translator->translate($query);
         }
 
-        throw new Exception('Could not find suitable translater for query with type: ' . $query->getType());
+        throw new Exception('Could not find suitable translator for query with type: ' . $query->getType());
     }
 
     /**

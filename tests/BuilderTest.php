@@ -103,7 +103,7 @@ class BuilderTest extends \PHPUnit\Framework\TestCase
     public function testNonsenseTypeQueryThrows()
     {
         $this->expectException(\Parable\Query\Exception::class);
-        $this->expectExceptionMessage('Could not find suitable translater for query with type: NONSENSE');
+        $this->expectExceptionMessage('Could not find suitable translator for query with type: NONSENSE');
 
         $this->builder->build(new Query('NONSENSE', 'table'));
     }

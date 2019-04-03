@@ -51,7 +51,12 @@ class Join
     public function on(string $joinKey, string $comparator, string $value): self
     {
         $this->onConditions[] = $this->createValueCondition(
-            $this->getTableAliasOrName(), $joinKey, $comparator, $value, 'AND', false
+            $this->getTableAliasOrName(),
+            $joinKey,
+            $comparator,
+            $value,
+            'AND',
+            false
         );
 
         return $this;
@@ -60,7 +65,12 @@ class Join
     public function orOn(string $joinKey, string $comparator, string $value): self
     {
         $this->onConditions[] = $this->createValueCondition(
-            $this->getTableAliasOrName(), $joinKey, $comparator, $value, 'OR', false
+            $this->getTableAliasOrName(),
+            $joinKey,
+            $comparator,
+            $value,
+            'OR',
+            false
         );
 
         return $this;
@@ -69,7 +79,12 @@ class Join
     public function onNull(string $key): self
     {
         $this->onConditions[] = $this->createValueCondition(
-            $this->getTableAliasOrName(), $key, 'IS NULL', null, 'AND', false
+            $this->getTableAliasOrName(),
+            $key,
+            'IS NULL',
+            null,
+            'AND',
+            false
         );
 
         return $this;
@@ -78,7 +93,12 @@ class Join
     public function onNotNull(string $key): self
     {
         $this->onConditions[] = $this->createValueCondition(
-            $this->getTableAliasOrName(), $key, 'IS NOT NULL', null, 'AND', false
+            $this->getTableAliasOrName(),
+            $key,
+            'IS NOT NULL',
+            null,
+            'AND',
+            false
         );
 
         return $this;
@@ -87,7 +107,12 @@ class Join
     public function onKey(string $key, string $comparator, string $queryKey): self
     {
         $this->onConditions[] = $this->createValueCondition(
-            $this->getTableAliasOrName(), $key, $comparator, $queryKey, 'AND', true
+            $this->getTableAliasOrName(),
+            $key,
+            $comparator,
+            $queryKey,
+            'AND',
+            true
         );
 
         return $this;
@@ -96,7 +121,12 @@ class Join
     public function orOnKey(string $key, string $comparator, string $queryKey): self
     {
         $this->onConditions[] = $this->createValueCondition(
-            $this->getTableAliasOrName(), $key, $comparator, $queryKey, 'OR', true
+            $this->getTableAliasOrName(),
+            $key,
+            $comparator,
+            $queryKey,
+            'OR',
+            true
         );
 
         return $this;

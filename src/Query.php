@@ -126,7 +126,11 @@ class Query
     public function where(string $key, string $comparator, $value): self
     {
         $this->whereConditions[] = $this->createValueCondition(
-            $this->tableName, $key, $comparator, $value, 'AND'
+            $this->tableName,
+            $key,
+            $comparator,
+            $value,
+            'AND'
         );
 
         return $this;
@@ -135,7 +139,11 @@ class Query
     public function whereNull(string $key): self
     {
         $this->whereConditions[] = $this->createValueCondition(
-            $this->tableName, $key, 'IS NULL', null, 'AND'
+            $this->tableName,
+            $key,
+            'IS NULL',
+            null,
+            'AND'
         );
 
         return $this;
@@ -144,7 +152,11 @@ class Query
     public function whereNotNull(string $key): self
     {
         $this->whereConditions[] = $this->createValueCondition(
-            $this->tableName, $key, 'IS NOT NULL', null, 'AND'
+            $this->tableName,
+            $key,
+            'IS NOT NULL',
+            null,
+            'AND'
         );
 
         return $this;
@@ -153,7 +165,11 @@ class Query
     public function orWhere(string $key, string $comparator, $value): self
     {
         $this->whereConditions[] = $this->createValueCondition(
-            $this->tableName, $key, $comparator, (string)$value, 'OR'
+            $this->tableName,
+            $key,
+            $comparator,
+            (string)$value,
+            'OR'
         );
 
         return $this;
@@ -162,7 +178,11 @@ class Query
     public function orWhereNull(string $key): self
     {
         $this->whereConditions[] = $this->createValueCondition(
-            $this->tableName, $key, 'IS NULL', null, 'OR'
+            $this->tableName,
+            $key,
+            'IS NULL',
+            null,
+            'OR'
         );
 
         return $this;
@@ -171,7 +191,11 @@ class Query
     public function orWhereNotNull(string $key): self
     {
         $this->whereConditions[] = $this->createValueCondition(
-            $this->tableName, $key, 'IS NOT NULL', null, 'OR'
+            $this->tableName,
+            $key,
+            'IS NOT NULL',
+            null,
+            'OR'
         );
 
         return $this;

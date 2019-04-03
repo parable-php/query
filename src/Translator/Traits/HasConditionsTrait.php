@@ -69,12 +69,12 @@ trait HasConditionsTrait
             $value = sprintf(
                 '%s.%s',
                 $this->quoteIdentifier($condition->getTableName()),
-                $this->quoteIdentifier($condition->getValue())
+                $this->quoteIdentifier((string)$condition->getValue())
             );
         } elseif (is_array($condition->getValue())) {
             $value = '(' . implode(',', $this->quoteValuesFromArray($condition->getValue())) . ')';
         } elseif (is_string($condition->getValue())) {
-            $value = $this->quote($condition->getValue());
+            $value = $this->quote((string)$condition->getValue());
         }
 
         return sprintf(
