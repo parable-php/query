@@ -74,7 +74,7 @@ trait HasConditionsTrait
         } elseif (is_array($condition->getValue())) {
             $value = '(' . implode(',', $this->quoteValuesFromArray($condition->getValue())) . ')';
         } elseif (is_string($condition->getValue())) {
-            $value = $this->quote((string)$condition->getValue());
+            $value = $this->quote($condition->getValue());
         }
 
         return sprintf(

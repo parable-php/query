@@ -22,9 +22,9 @@ abstract class AbstractTranslator
 
     abstract public function translate(Query $query): string;
 
-    public function quote(string $string): string
+    public function quote($value): string
     {
-        return $this->connection->quote($string);
+        return $this->connection->quote((string)$value);
     }
 
     public function quoteIdentifier(string $string): string
@@ -46,7 +46,7 @@ abstract class AbstractTranslator
         $quoted = [];
 
         foreach ($array as $key => $value) {
-            $quoted[$key] = $this->connection->quote($value);
+            $quoted[$key] = $this->quote($value);
         }
 
         return $quoted;

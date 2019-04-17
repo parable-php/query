@@ -1,5 +1,10 @@
 # Parable PHP Query
 
+## 0.1.4
+
+_Bugfixes_
+- Make sure we never try to `quote()` a non-string value by string-casting before we hand it over to `PDO`.
+
 ## 0.1.3
 
 _Changes_
