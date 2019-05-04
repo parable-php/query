@@ -2,7 +2,7 @@
 
 namespace Parable\Query;
 
-class Order
+class OrderBy
 {
     protected const ORDER_ASC = 1;
     protected const ORDER_DESC = 2;
@@ -20,6 +20,11 @@ class Order
     protected function __construct(int $direction, array $keys)
     {
         $this->direction = $direction;
+
+        if (count($keys) === 0) {
+            throw new Exception('Cannot create order without keys.');
+        }
+
         $this->keys = $keys;
     }
 

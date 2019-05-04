@@ -2,13 +2,22 @@
 
 namespace Parable\Query\Tests;
 
-use Parable\Query\Order;
+use Parable\Query\Exception;
+use Parable\Query\OrderBy;
 
 class OrderTest extends \PHPUnit\Framework\TestCase
 {
+    public function testOrderRequiresKeys(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Cannot create order without keys.');
+
+        OrderBy::asc();
+    }
+
     public function testOrderByAscending(): void
     {
-        $orderBy = Order::asc('key');
+        $orderBy = OrderBy::asc('key');
 
         self::assertTrue($orderBy->isAscending());
         self::assertFalse($orderBy->isDescending());
@@ -20,7 +29,7 @@ class OrderTest extends \PHPUnit\Framework\TestCase
 
     public function testOrderByDescending(): void
     {
-        $orderBy = Order::desc('key');
+        $orderBy = OrderBy::desc('key');
 
         self::assertTrue($orderBy->isDescending());
         self::assertFalse($orderBy->isAscending());
@@ -32,7 +41,7 @@ class OrderTest extends \PHPUnit\Framework\TestCase
 
     public function testMultipleKeys(): void
     {
-        $orderBy = Order::asc('id', 'updated_at');
+        $orderBy = OrderBy::asc('id', 'updated_at');
 
         self::assertSame(['id', 'updated_at'], $orderBy->getKeys());
     }

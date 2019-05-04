@@ -308,9 +308,9 @@ class Query
         return $this->groupBy;
     }
 
-    public function orderBy(Order $order): self
+    public function orderBy(OrderBy $orderBy): self
     {
-        $this->orderBy[] = $order;
+        $this->orderBy[] = $orderBy;
 
         return $this;
     }
@@ -321,7 +321,7 @@ class Query
     }
 
     /**
-     * @return Order[]
+     * @return OrderBy[]
      */
     public function getOrderBy(): array
     {
@@ -338,6 +338,11 @@ class Query
     public function countValueSets(): int
     {
         return count($this->getValueSets());
+    }
+
+    public function hasValueSets(): bool
+    {
+        return $this->countValueSets() > 0;
     }
 
     /**

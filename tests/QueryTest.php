@@ -6,7 +6,7 @@ use Parable\Query\Condition\AbstractCondition;
 use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Condition\ValueCondition;
 use Parable\Query\Join;
-use Parable\Query\Order;
+use Parable\Query\OrderBy;
 use Parable\Query\Query;
 use Parable\Query\ValueSet;
 
@@ -333,7 +333,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
-        $query->orderBy(Order::asc('username'));
+        $query->orderBy(OrderBy::asc('username'));
 
         self::assertCount(1, $query->getOrderBy());
         self::assertTrue($query->getOrderBy()[0]->isAscending());
@@ -344,7 +344,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
-        $query->orderBy(Order::desc('username'));
+        $query->orderBy(OrderBy::desc('username'));
 
         self::assertCount(1, $query->getOrderBy());
         self::assertTrue($query->getOrderBy()[0]->isDescending());
@@ -390,5 +390,16 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         $query->addValueSet(new ValueSet([]));
 
         self::assertSame(1, $query->countValueSets());
+    }
+
+    public function testHasValueSets()
+    {
+        $query = new Query(Query::TYPE_UPDATE, 'table', 't');
+
+        self::assertFalse($query->hasValueSets());
+
+        $query->addValueSet(new ValueSet([]));
+
+        self::assertTrue($query->hasValueSets());
     }
 }

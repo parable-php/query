@@ -1,5 +1,12 @@
 # Parable PHP Query
 
+## 0.2.1
+
+_Changes_
+
+- `hasValueSets()` was removed but proves useful enough to put back in.
+- `Order` renamed to `OrderBy`, can no longer be created without keys being passed.
+
 ## 0.2.0
 
 _Changes_

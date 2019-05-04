@@ -4,7 +4,7 @@ namespace Parable\Query\Tests\Translator;
 
 use Parable\Query\Exception;
 use Parable\Query\Join;
-use Parable\Query\Order;
+use Parable\Query\OrderBy;
 use Parable\Query\Query;
 use Parable\Query\Translator\SelectTranslator;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
@@ -209,7 +209,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testOrderBy()
     {
         $query = Query::select('table', 't');
-        $query->orderBy(Order::asc('username'));
+        $query->orderBy(OrderBy::asc('username'));
 
         self::assertSame(
             "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` ASC",
@@ -217,7 +217,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
         );
 
         $query = Query::select('table', 't');
-        $query->orderBy(Order::desc('username'));
+        $query->orderBy(OrderBy::desc('username'));
 
         self::assertSame(
             "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` DESC",
@@ -228,8 +228,8 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testMultipleOrderBys()
     {
         $query = Query::select('table', 't');
-        $query->orderBy(Order::desc('username'));
-        $query->orderBy(Order::asc('u.test'));
+        $query->orderBy(OrderBy::desc('username'));
+        $query->orderBy(OrderBy::asc('u.test'));
 
         self::assertSame(
             "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` DESC, `u`.`test` ASC",
@@ -240,7 +240,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testMultipleOrderByKeys()
     {
         $query = Query::select('table', 't');
-        $query->orderBy(Order::asc('username', 'email', 'updated_at'));
+        $query->orderBy(OrderBy::asc('username', 'email', 'updated_at'));
 
         self::assertSame(
             "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` ASC, `t`.`email` ASC, `t`.`updated_at` ASC",
@@ -251,8 +251,8 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testMultipleOrderByWithSameKeysIsFineIfDirectionIsSame()
     {
         $query = Query::select('table', 't');
-        $query->orderBy(Order::asc('username', 'username', 'username'));
-        $query->orderBy(Order::asc('username'));
+        $query->orderBy(OrderBy::asc('username', 'username', 'username'));
+        $query->orderBy(OrderBy::asc('username'));
 
         self::assertSame(
             "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` ASC",
@@ -266,8 +266,8 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Cannot define order by key twice with different directions.');
 
         $query = Query::select('table', 't');
-        $query->orderBy(Order::asc('username'));
-        $query->orderBy(Order::desc('username'));
+        $query->orderBy(OrderBy::asc('username'));
+        $query->orderBy(OrderBy::desc('username'));
 
         $this->translator->translate($query);
     }
@@ -408,8 +408,8 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
         $query->leftJoin($join);
 
         $query->groupBy('lastname');
-        $query->orderBy(Order::desc('id'));
-        $query->orderBy(Order::asc('p.id', 'lastname'));
+        $query->orderBy(OrderBy::desc('id'));
+        $query->orderBy(OrderBy::asc('p.id', 'lastname'));
 
         $query->limit(50, 10);
 

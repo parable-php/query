@@ -15,18 +15,18 @@ trait SupportsOrderByTrait
 
         $parts = [];
 
-        foreach ($query->getOrderBy() as $order) {
-            $quotedKeys = $this->quotePrefixedIdentifiersFromArray($query, $order->getKeys());
+        foreach ($query->getOrderBy() as $orderBy) {
+            $quotedKeys = $this->quotePrefixedIdentifiersFromArray($query, $orderBy->getKeys());
 
             foreach ($quotedKeys as $key) {
-                if (isset($parts[$key]) && strpos($parts[$key], $order->getDirectionAsString()) === false) {
+                if (isset($parts[$key]) && strpos($parts[$key], $orderBy->getDirectionAsString()) === false) {
                     throw new Exception('Cannot define order by key twice with different directions.');
                 }
 
                 $parts[$key] = sprintf(
                     '%s %s',
                     $key,
-                    $order->getDirectionAsString()
+                    $orderBy->getDirectionAsString()
                 );
             }
         }
