@@ -13,7 +13,7 @@ trait SupportsJoinTrait
         }
 
         $innerJoins = $this->buildJoinsFromType($query, Query::JOIN_TYPE_INNER);
-        $leftJoins  = $this->buildJoinsFromType($query, Query::JOIN_TYPE_LEFT);
+        $leftJoins = $this->buildJoinsFromType($query, Query::JOIN_TYPE_LEFT);
 
         $allJoins = array_merge($leftJoins, $innerJoins);
 

@@ -7,8 +7,9 @@ use Parable\Query\Translator\Traits\HasConditionsTrait;
 use Parable\Query\Translator\Traits\SupportsJoinTrait;
 use Parable\Query\Translator\Traits\SupportsValuesTrait;
 use Parable\Query\Translator\Traits\SupportsWhereTrait;
+use Parable\Query\TranslatorInterface;
 
-class UpdateTranslator extends AbstractTranslator
+class UpdateTranslator extends AbstractTranslator implements TranslatorInterface
 {
     use HasConditionsTrait;
     use SupportsJoinTrait;

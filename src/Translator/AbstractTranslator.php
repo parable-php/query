@@ -18,21 +18,17 @@ abstract class AbstractTranslator
         $this->connection = $connection;
     }
 
-    abstract public function accepts(Query $query): bool;
-
-    abstract public function translate(Query $query): string;
-
-    public function quote($value): string
+    protected function quote($value): string
     {
         return $this->connection->quote((string)$value);
     }
 
-    public function quoteIdentifier(string $string): string
+    protected function quoteIdentifier(string $string): string
     {
         return '`' . trim($string, '`') . '`';
     }
 
-    public function quoteIdentifierPrefixedKey(string $tableName, string $key): string
+    protected function quoteIdentifierPrefixedKey(string $tableName, string $key): string
     {
         return sprintf(
             '%s.%s',
@@ -41,7 +37,7 @@ abstract class AbstractTranslator
         );
     }
 
-    public function quoteValuesFromArray(array $array): array
+    protected function quoteValuesFromArray(array $array): array
     {
         $quoted = [];
 
@@ -52,7 +48,7 @@ abstract class AbstractTranslator
         return $quoted;
     }
 
-    public function quoteIdentifiersFromArray(array $array): array
+    protected function quoteIdentifiersFromArray(array $array): array
     {
         $quoted = [];
 
@@ -63,7 +59,7 @@ abstract class AbstractTranslator
         return $quoted;
     }
 
-    public function quotePrefixedIdentifiersFromArray(Query $query, array $array): array
+    protected function quotePrefixedIdentifiersFromArray(Query $query, array $array): array
     {
         $quoted = [];
 

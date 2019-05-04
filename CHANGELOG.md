@@ -1,5 +1,21 @@
 # Parable PHP Query
 
+## 0.2.0
+
+_Changes_
+
+- `Query::orderBy()` now takes an `Order` object, rather than string values. Example: `->orderBy(Order::asc('id', 'username'))`, which will parse to `ORDER BY id ASC, username ASC`. Use `::desc` for descending. You can call it multiple times, so you can do one key `ASC`, one key `DESC`, and then another `ASC` if you want.
+
+  **NOTE**: Adding a key more than once is possible, but _not_ if they are of different directions.
+- Most places where single-type values were being passed into a method as an array, it now expects the values to be passed as multiple parameters. These methods expect multiple parameters rather than an array:
+  - `Order::asc(...$keys)`
+  - `Order::desc(...$keys)`
+  - `Query::setColumns(...$columns)`
+  - `Query::groupBy(...$keys)`
+- Translators are now type-hinted as `TranslatorInterface` and all methods on `AbstractTranslator` have been made protected. This makes it easier to see what functionality is necessary to expose to the outside.
+- `Query` has gained some quality of life methods: `hasWhereConditions(): bool`, `hasGroupBy(): bool`, `hasOrderBy(): bool` and `countValueSets(): int`.
+- `Query::createCleanClone()` has been added, which will return a copy of the query you called it on, with no further configuration whatsoever being retained. 
+
 ## 0.1.4
 
 _Bugfixes_

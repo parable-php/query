@@ -4,8 +4,9 @@ namespace Parable\Query\Translator;
 
 use Parable\Query\Query;
 use Parable\Query\Translator\Traits\SupportsValuesTrait;
+use Parable\Query\TranslatorInterface;
 
-class InsertTranslator extends AbstractTranslator
+class InsertTranslator extends AbstractTranslator implements TranslatorInterface
 {
     use SupportsValuesTrait;
 

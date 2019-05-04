@@ -4,6 +4,7 @@ namespace Parable\Query\Tests\Translator;
 
 use Parable\Query\Exception;
 use Parable\Query\Join;
+use Parable\Query\Order;
 use Parable\Query\Query;
 use Parable\Query\Translator\SelectTranslator;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
@@ -86,7 +87,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testSetColumns()
     {
         $query = Query::select('table', 't');
-        $query->setColumns(['id', 'username']);
+        $query->setColumns('id', 'username');
 
         self::assertSame(
             "SELECT `t`.`id`, `t`.`username` FROM `table` AS `t`",
@@ -97,7 +98,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testSetColumnsWithAliasForKey()
     {
         $query = Query::select('table', 't');
-        $query->setColumns(['id', 'u.username']);
+        $query->setColumns('id', 'u.username');
 
         self::assertSame(
             "SELECT `t`.`id`, `u`.`username` FROM `table` AS `t`",
@@ -108,7 +109,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testSetColumnsWithSumEscapesOnlyColumns()
     {
         $query = Query::select('table', 't');
-        $query->setColumns(['SUM(amount)']);
+        $query->setColumns('SUM(amount)');
 
         self::assertSame(
             "SELECT SUM(`t`.`amount`) FROM `table` AS `t`",
@@ -119,14 +120,14 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testSetColumnsWithSumNumericOrAsteriskIsNotEscaped()
     {
         $query = Query::select('table', 't');
-        $query->setColumns(['SUM(1)']);
+        $query->setColumns('SUM(1)');
 
         self::assertSame(
             "SELECT SUM(1) FROM `table` AS `t`",
             $this->translator->translate($query)
         );
 
-        $query->setColumns(['SUM(*)']);
+        $query->setColumns('SUM(*)');
 
         self::assertSame(
             "SELECT SUM(*) FROM `table` AS `t`",
@@ -140,7 +141,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessage('Function SUM requires a value to be passed.');
 
         $query = Query::select('table', 't');
-        $query->setColumns(['SUM()']);
+        $query->setColumns('SUM()');
 
         $this->translator->translate($query);
     }
@@ -197,7 +198,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     {
         $query = Query::select('table', 't');
 
-        $query->groupBy(['username', 'u.email']);
+        $query->groupBy('username', 'u.email');
 
         self::assertSame(
             "SELECT * FROM `table` AS `t` GROUP BY `t`.`username`, `u`.`email`",
@@ -208,7 +209,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testOrderBy()
     {
         $query = Query::select('table', 't');
-        $query->orderBy('username');
+        $query->orderBy(Order::asc('username'));
 
         self::assertSame(
             "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` ASC",
@@ -216,15 +217,7 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
         );
 
         $query = Query::select('table', 't');
-        $query->orderBy('username', Query::ORDER_ASC);
-
-        self::assertSame(
-            "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` ASC",
-            $this->translator->translate($query)
-        );
-
-        $query = Query::select('table', 't');
-        $query->orderBy('username', Query::ORDER_DESC);
+        $query->orderBy(Order::desc('username'));
 
         self::assertSame(
             "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` DESC",
@@ -235,8 +228,8 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
     public function testMultipleOrderBys()
     {
         $query = Query::select('table', 't');
-        $query->orderBy('username', Query::ORDER_DESC);
-        $query->orderBy('u.test', Query::ORDER_ASC);
+        $query->orderBy(Order::desc('username'));
+        $query->orderBy(Order::asc('u.test'));
 
         self::assertSame(
             "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` DESC, `u`.`test` ASC",
@@ -244,13 +237,37 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testOrderByThrowsOnInvalidDirection()
+    public function testMultipleOrderByKeys()
+    {
+        $query = Query::select('table', 't');
+        $query->orderBy(Order::asc('username', 'email', 'updated_at'));
+
+        self::assertSame(
+            "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` ASC, `t`.`email` ASC, `t`.`updated_at` ASC",
+            $this->translator->translate($query)
+        );
+    }
+
+    public function testMultipleOrderByWithSameKeysIsFineIfDirectionIsSame()
+    {
+        $query = Query::select('table', 't');
+        $query->orderBy(Order::asc('username', 'username', 'username'));
+        $query->orderBy(Order::asc('username'));
+
+        self::assertSame(
+            "SELECT * FROM `table` AS `t` ORDER BY `t`.`username` ASC",
+            $this->translator->translate($query)
+        );
+    }
+
+    public function testMultipleOrderByWithSameKeysThrowsOnDifferentDirection()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Order direction NOPE is invalid.');
+        $this->expectExceptionMessage('Cannot define order by key twice with different directions.');
 
         $query = Query::select('table', 't');
-        $query->orderBy('username', 'NOPE');
+        $query->orderBy(Order::asc('username'));
+        $query->orderBy(Order::desc('username'));
 
         $this->translator->translate($query);
     }
@@ -375,19 +392,9 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
 
     public function testEverySingleTraitOnSelectQueryTranslator()
     {
-        /*
-         *
-        self::assertContains(HasConditionsTrait::class, $traits);
-        self::assertContains(SupportsJoinTrait::class, $traits);
-        self::assertContains(SupportsWhereTrait::class, $traits);
-        self::assertContains(SupportsGroupByTrait::class, $traits);
-        self::assertContains(SupportsOrderByTrait::class, $traits);
-        self::assertContains(SupportsLimitTrait::class, $traits);
-         */
-
         $query = Query::select('users', 'u');
 
-        $query->setColumns(['id','lastname','firstname','p.id','p.website']);
+        $query->setColumns('id','lastname','firstname','p.id','p.website');
         $query->where('lastname', '=', 'McTest');
         $query->whereCallable(function(Query $query) {
             $query->where('firstname', '=', 'John');
@@ -400,14 +407,15 @@ class SelectTranslatorTest extends \PHPUnit\Framework\TestCase
 
         $query->leftJoin($join);
 
-        $query->groupBy(['lastname']);
-        $query->orderBy('id', Query::ORDER_DESC);
+        $query->groupBy('lastname');
+        $query->orderBy(Order::desc('id'));
+        $query->orderBy(Order::asc('p.id', 'lastname'));
 
         $query->limit(50, 10);
 
         self::assertTrue($this->translator->accepts($query));
         self::assertSame(
-            "SELECT `u`.`id`, `u`.`lastname`, `u`.`firstname`, `p`.`id`, `p`.`website` FROM `users` AS `u` LEFT JOIN `profile` AS `p` ON (`u`.`id` = `p`.`user_id` AND `u`.`updated_at` IS NULL) WHERE `u`.`lastname` = 'McTest' AND (`u`.`firstname` = 'John' OR `u`.`firstname` = 'Amy') GROUP BY `u`.`lastname` ORDER BY `u`.`id` DESC LIMIT 50,10",
+            "SELECT `u`.`id`, `u`.`lastname`, `u`.`firstname`, `p`.`id`, `p`.`website` FROM `users` AS `u` LEFT JOIN `profile` AS `p` ON (`u`.`id` = `p`.`user_id` AND `u`.`updated_at` IS NULL) WHERE `u`.`lastname` = 'McTest' AND (`u`.`firstname` = 'John' OR `u`.`firstname` = 'Amy') GROUP BY `u`.`lastname` ORDER BY `u`.`id` DESC, `p`.`id` ASC, `u`.`lastname` ASC LIMIT 50,10",
             $this->translator->translate($query)
         );
     }

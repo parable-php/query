@@ -2,8 +2,8 @@
 
 namespace Parable\Query\Translator\Traits;
 
-use Parable\Query\Condition\ValueCondition;
 use Parable\Query\Condition\CallableCondition;
+use Parable\Query\Condition\ValueCondition;
 use Parable\Query\Exception;
 use Parable\Query\Query;
 
@@ -34,15 +34,10 @@ trait HasConditionsTrait
                 continue;
             }
 
-            // By default the value is simply the value
-            $value = $condition->getValue();
-
-            $string = $this->quoteValueIfNeeded($query, $condition, $value);
-
-            $part = trim($string);
+            $part = $this->quoteValueIfNeeded($query, $condition, $condition->getValue());
 
             if ($index > 0) {
-                $part = $condition->getType() . ' ' . $part;
+                $part = $condition->getType() . ' ' . trim($part);
             }
 
             $parts[] = $part;
@@ -53,9 +48,9 @@ trait HasConditionsTrait
 
     protected function handleCallableCondition(Query $query, CallableCondition $condition, int $recursion): string
     {
-        $subQuery = new Query($query->getType(), $query->getTableName(), $query->getTableAlias());
-
+        $subQuery = $query->createCleanClone();
         $callable = $condition->getCallable();
+
         $callable($subQuery);
 
         $part = '(' . $this->buildWhere($subQuery, $recursion + 1) . ')';

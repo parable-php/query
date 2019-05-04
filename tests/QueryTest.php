@@ -6,6 +6,7 @@ use Parable\Query\Condition\AbstractCondition;
 use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Condition\ValueCondition;
 use Parable\Query\Join;
+use Parable\Query\Order;
 use Parable\Query\Query;
 use Parable\Query\ValueSet;
 
@@ -83,7 +84,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
-        $query->setColumns(['username', 'email']);
+        $query->setColumns('username', 'email');
 
         self::assertSame(
             ['username', 'email'],
@@ -320,7 +321,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
-        $query->groupBy(['username']);
+        $query->groupBy('username');
 
         self::assertSame(
             ['username'],
@@ -332,28 +333,22 @@ class QueryTest extends \PHPUnit\Framework\TestCase
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
-        $query->orderBy('username');
+        $query->orderBy(Order::asc('username'));
 
-        self::assertSame(
-            [
-                'username' => Query::ORDER_ASC,
-            ],
-            $query->getOrderBy()
-        );
+        self::assertCount(1, $query->getOrderBy());
+        self::assertTrue($query->getOrderBy()[0]->isAscending());
+        self::assertSame(['username'], $query->getOrderBy()[0]->getKeys());
     }
 
     public function testOrderByDescending()
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
-        $query->orderBy('username', Query::ORDER_DESC);
+        $query->orderBy(Order::desc('username'));
 
-        self::assertSame(
-            [
-                'username' => Query::ORDER_DESC,
-            ],
-            $query->getOrderBy()
-        );
+        self::assertCount(1, $query->getOrderBy());
+        self::assertTrue($query->getOrderBy()[0]->isDescending());
+        self::assertSame(['username'], $query->getOrderBy()[0]->getKeys());
     }
 
     public function testInnerJoin()
@@ -386,14 +381,14 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame($join, $joinFromQuery);
     }
 
-    public function testHasValueSets()
+    public function testCountValueSets()
     {
         $query = new Query(Query::TYPE_UPDATE, 'table', 't');
 
-        self::assertFalse($query->hasValueSets());
+        self::assertSame(0, $query->countValueSets());
 
         $query->addValueSet(new ValueSet([]));
 
-        self::assertTrue($query->hasValueSets());
+        self::assertSame(1, $query->countValueSets());
     }
 }

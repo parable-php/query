@@ -111,7 +111,7 @@ class Query
         return $this->tableAlias ?? $this->tableName;
     }
 
-    public function setColumns(array $columns): self
+    public function setColumns(string ...$columns): self
     {
         $this->columns = $columns;
 
@@ -222,6 +222,11 @@ class Query
         return $this;
     }
 
+    public function hasWhereConditions(): bool
+    {
+        return count($this->whereConditions) > 0;
+    }
+
     public function getWhereConditions(): array
     {
         return $this->whereConditions;
@@ -283,11 +288,16 @@ class Query
     /**
      * @param string[] $keys
      */
-    public function groupBy(array $keys): self
+    public function groupBy(string ...$keys): self
     {
         $this->groupBy = $keys;
 
         return $this;
+    }
+
+    public function hasGroupBy(): bool
+    {
+        return count($this->groupBy) > 0;
     }
 
     /**
@@ -298,13 +308,21 @@ class Query
         return $this->groupBy;
     }
 
-    public function orderBy(string $key, string $direction = self::ORDER_ASC): self
+    public function orderBy(Order $order): self
     {
-        $this->orderBy[$key] = $direction;
+        $this->orderBy[] = $order;
 
         return $this;
     }
 
+    public function hasOrderBy(): bool
+    {
+        return count($this->orderBy) > 0;
+    }
+
+    /**
+     * @return Order[]
+     */
     public function getOrderBy(): array
     {
         return $this->orderBy;
@@ -317,6 +335,11 @@ class Query
         return $this;
     }
 
+    public function countValueSets(): int
+    {
+        return count($this->getValueSets());
+    }
+
     /**
      * @return ValueSet[]
      */
@@ -325,9 +348,9 @@ class Query
         return $this->valueSets;
     }
 
-    public function hasValueSets(): bool
+    public function createCleanClone(): self
     {
-        return count($this->getValueSets()) > 0;
+        return new self($this->getType(), $this->getTableName(), $this->getTableAlias());
     }
 
     protected function createValueCondition(

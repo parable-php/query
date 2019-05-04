@@ -2,7 +2,6 @@
 
 namespace Parable\Query;
 
-use Parable\Query\Translator\AbstractTranslator;
 use Parable\Query\Translator\DeleteTranslator;
 use Parable\Query\Translator\InsertTranslator;
 use Parable\Query\Translator\SelectTranslator;
@@ -24,7 +23,7 @@ class Builder
     public function build(Query $query): string
     {
         foreach ($this->getTranslators() as $translatorClass) {
-            /** @var AbstractTranslator $translator */
+            /** @var TranslatorInterface $translator */
             $translator = new $translatorClass($this->connection);
 
             if (!$translator->accepts($query)) {

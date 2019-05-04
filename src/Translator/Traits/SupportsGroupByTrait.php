@@ -8,7 +8,7 @@ trait SupportsGroupByTrait
 {
     protected function buildGroupBy(Query $query): string
     {
-        if (count($query->getGroupBy()) === 0) {
+        if (!$query->hasGroupBy()) {
             return '';
         }
 

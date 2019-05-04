@@ -9,8 +9,9 @@ use Parable\Query\Translator\Traits\SupportsJoinTrait;
 use Parable\Query\Translator\Traits\SupportsLimitTrait;
 use Parable\Query\Translator\Traits\SupportsOrderByTrait;
 use Parable\Query\Translator\Traits\SupportsWhereTrait;
+use Parable\Query\TranslatorInterface;
 
-class SelectTranslator extends AbstractTranslator
+class SelectTranslator extends AbstractTranslator implements TranslatorInterface
 {
     use HasConditionsTrait;
     use SupportsJoinTrait;

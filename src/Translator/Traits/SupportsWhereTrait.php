@@ -8,7 +8,7 @@ trait SupportsWhereTrait
 {
     protected function buildWhere(Query $query, $recursion = 0): string
     {
-        if (empty($query->getWhereConditions())) {
+        if (!$query->hasWhereConditions()) {
             return '';
         }
 

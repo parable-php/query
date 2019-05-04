@@ -23,7 +23,7 @@ trait SupportsValuesTrait
     {
         $valueSets = $query->getValueSets();
 
-        if (count($valueSets) !== 1) {
+        if ($query->countValueSets() !== 1) {
             throw new Exception(sprintf(
                 'Update queries must contain exactly one value set, %d provided.',
                 count($valueSets)
@@ -53,23 +53,19 @@ trait SupportsValuesTrait
 
     protected function buildInsertValues(Query $query): string
     {
-        $valueSets = $query->getValueSets();
-
-        if (count($valueSets) === 0) {
+        if ($query->countValueSets() < 1) {
             throw new Exception('Insert queries must contain at least one value set.');
         }
 
-        $keys = $this->getKeysFromValueSets($valueSets);
-
         $valueParts = [];
 
-        foreach ($valueSets as $valueSet) {
+        foreach ($query->getValueSets() as $valueSet) {
             $valueParts[] = '(' . implode(', ', $this->quoteValuesFromArray($valueSet->getValues())) . ')';
         }
 
         return sprintf(
             '(%s) VALUES %s',
-            implode(',', $this->quoteIdentifiersFromArray($keys)),
+            implode(',', $this->quoteIdentifiersFromArray($this->getKeysFromValueSets($query->getValueSets()))),
             implode(',', $valueParts)
         );
     }

@@ -9,24 +9,26 @@ trait SupportsOrderByTrait
 {
     protected function buildOrderBy(Query $query): string
     {
-        if (count($query->getOrderBy()) === 0) {
+        if (!$query->hasOrderBy()) {
             return '';
         }
 
         $parts = [];
 
-        foreach ($query->getOrderBy() as $key => $direction) {
-            if (!in_array($direction, [Query::ORDER_ASC, Query::ORDER_DESC])) {
-                throw new Exception('Order direction ' . $direction . ' is invalid.');
+        foreach ($query->getOrderBy() as $order) {
+            $quotedKeys = $this->quotePrefixedIdentifiersFromArray($query, $order->getKeys());
+
+            foreach ($quotedKeys as $key) {
+                if (isset($parts[$key]) && strpos($parts[$key], $order->getDirectionAsString()) === false) {
+                    throw new Exception('Cannot define order by key twice with different directions.');
+                }
+
+                $parts[$key] = sprintf(
+                    '%s %s',
+                    $key,
+                    $order->getDirectionAsString()
+                );
             }
-
-            $quoted = $this->quotePrefixedIdentifiersFromArray($query, [$key]);
-
-            $parts[] = sprintf(
-                '%s %s',
-                reset($quoted),
-                $direction
-            );
         }
 
         return sprintf(
