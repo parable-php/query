@@ -1,5 +1,19 @@
 # Parable PHP Query
 
+## 0.3.0
+
+_Changes_
+
+- The `SupportsForceIndexTrait` trait `Query::forceIndex(string $key)` and `Query::getForceIndex(): ?string` have been added, allowing you to force a specific index. Use `PRIMARY_KEY_INDEX_VALUE` in place of the actual primary key to force the primary key as an index.
+- `Query::delete()` and `Query::update()` no longer accept aliases since they caused issues.
+- `AbstractCondition::VALUE_TYPE_VALUE` and `AbstractCondition::VALUE_TYPE_KEY` have been removed.
+- `Query::ORDER_ASC` and `Query::ORDER_DESC` have been removed.
+- `Query::VALID_TYPES` has been removed, as it was unused.
+- All string values of `AND` and `OR` have been replaced with `AbstractCondition::TYPE_AND` and `AbstractCondition::TYPE_OR`.
+- `ORDER_ASC` and `ORDER_DESC` have been changed from `int` values to their corresponding `string` values `ASC` and `DESC`.
+- `OrderBy::getDirectionAsString()` has turned into `OrderBy::getDirection()`.
+- The `BuilderTest` now also attempts to _run_ the queries. Adding this step made some issues clear, which are now all fixed.
+
 ## 0.2.1
 
 _Changes_

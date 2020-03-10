@@ -3,6 +3,7 @@
 namespace Parable\Query\Translator\Traits;
 
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 
 trait SupportsJoinTrait
 {
@@ -12,45 +13,42 @@ trait SupportsJoinTrait
             return '';
         }
 
-        $innerJoins = $this->buildJoinsFromType($query, Query::JOIN_TYPE_INNER);
-        $leftJoins = $this->buildJoinsFromType($query, Query::JOIN_TYPE_LEFT);
+        $joinParts = new StringBuilder();
 
-        $allJoins = array_merge($leftJoins, $innerJoins);
+        $joinParts->merge($this->buildJoinsFromType($query, Query::JOIN_TYPE_INNER));
+        $joinParts->merge($this->buildJoinsFromType($query, Query::JOIN_TYPE_LEFT));
 
-        return implode(' ', $allJoins);
+        return $joinParts->toString();
     }
 
-    protected function buildJoinsFromType(Query $query, string $type): array
+    protected function buildJoinsFromType(Query $query, string $type): StringBuilder
     {
         $joins = $query->getJoinsByType($type);
 
-        $joinStrings = [];
+        $joinParts = new StringBuilder();
 
         foreach ($joins as $join) {
-            $conditions = $this->buildConditions($query, $join->getOnConditions());
+            $conditionParts = $this->buildConditions($query, $join->getOnConditions());
 
-            if (empty($conditions)) {
+            if ($conditionParts->isEmpty()) {
                 continue;
             }
 
-            $string = implode(' ', $conditions);
-
-            $tableName = $this->quoteIdentifier($join->getTableName());
+            $tableParts = new StringBuilder();
+            $tableParts->add($this->quoteIdentifier($join->getTableName()));
 
             if ($join->getTableAlias() !== null) {
-                $tableName .= ' AS ' . $this->quoteIdentifier($join->getTableAlias());
+                $tableParts->add($this->quoteIdentifier($join->getTableAlias()));
             }
 
-            $joinClause = sprintf(
+            $joinParts->add(sprintf(
                 '%s JOIN %s ON (%s)',
                 $type,
-                $tableName,
-                $string
-            );
-
-            $joinStrings[] = $joinClause;
+                $tableParts->toString(),
+                $conditionParts->toString()
+            ));
         }
 
-        return $joinStrings;
+        return $joinParts;
     }
 }

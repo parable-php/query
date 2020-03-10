@@ -6,21 +6,23 @@ use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Condition\ValueCondition;
 use Parable\Query\Exception;
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 
 trait HasConditionsTrait
 {
     /**
      * @param ValueCondition[]|CallableCondition[] $conditions
      *
-     * @return string[]
+     * @return StringBuilder
+     * @throws Exception
      */
-    protected function buildConditions(Query $query, array $conditions, $recursion = 0): array
+    protected function buildConditions(Query $query, array $conditions, $recursion = 0): StringBuilder
     {
         if ($recursion >= 5) {
             throw new Exception('Recursion of callable WHERE clauses is too deep.');
         }
 
-        $parts = [];
+        $conditionParts = new StringBuilder();
 
         foreach ($conditions as $index => $condition) {
             if ($condition instanceof CallableCondition) {
@@ -30,7 +32,7 @@ trait HasConditionsTrait
                     $part = $condition->getType() . ' ' . $part;
                 }
 
-                $parts[] = $part;
+                $conditionParts->add($part);
                 continue;
             }
 
@@ -40,10 +42,10 @@ trait HasConditionsTrait
                 $part = $condition->getType() . ' ' . trim($part);
             }
 
-            $parts[] = $part;
+            $conditionParts->add($part);
         }
 
-        return $parts;
+        return $conditionParts;
     }
 
     protected function handleCallableCondition(Query $query, CallableCondition $condition, int $recursion): string
@@ -53,9 +55,10 @@ trait HasConditionsTrait
 
         $callable($subQuery);
 
-        $part = '(' . $this->buildWhere($subQuery, $recursion + 1) . ')';
-
-        return $part;
+        return sprintf(
+            '(%s)',
+            $this->buildWhere($subQuery, $recursion + 1)
+        );
     }
 
     protected function quoteValueIfNeeded(Query $query, ValueCondition $condition, $value): string
@@ -67,7 +70,10 @@ trait HasConditionsTrait
                 $this->quoteIdentifier((string)$condition->getValue())
             );
         } elseif (is_array($condition->getValue())) {
-            $value = '(' . implode(',', $this->quoteValuesFromArray($condition->getValue())) . ')';
+            $value = sprintf(
+                '(%s)',
+                StringBuilder::fromArray($this->quoteValuesFromArray($condition->getValue()), ',')->toString()
+            );
         } elseif (is_string($condition->getValue())) {
             $value = $this->quote($condition->getValue());
         }

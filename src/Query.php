@@ -16,15 +16,7 @@ class Query
     public const JOIN_TYPE_INNER = 'INNER';
     public const JOIN_TYPE_LEFT = 'LEFT';
 
-    public const ORDER_ASC = 'ASC';
-    public const ORDER_DESC = 'DESC';
-
-    protected const VALID_TYPES = [
-        self::TYPE_DELETE,
-        self::TYPE_INSERT,
-        self::TYPE_UPDATE,
-        self::TYPE_SELECT,
-    ];
+    public const PRIMARY_KEY_INDEX = 'PRIMARY_KEY_INDEX_VALUE';
 
     /**
      * @var string
@@ -65,6 +57,11 @@ class Query
      * @var int|null
      */
     protected $offset;
+
+    /**
+     * @var string|null
+     */
+    protected $forceIndex;
 
     /**
      * @var string[]
@@ -130,7 +127,7 @@ class Query
             $key,
             $comparator,
             $value,
-            'AND'
+            AbstractCondition::TYPE_AND
         );
 
         return $this;
@@ -143,7 +140,7 @@ class Query
             $key,
             'IS NULL',
             null,
-            'AND'
+            AbstractCondition::TYPE_AND
         );
 
         return $this;
@@ -156,7 +153,7 @@ class Query
             $key,
             'IS NOT NULL',
             null,
-            'AND'
+            AbstractCondition::TYPE_AND
         );
 
         return $this;
@@ -169,7 +166,7 @@ class Query
             $key,
             $comparator,
             (string)$value,
-            'OR'
+            AbstractCondition::TYPE_OR
         );
 
         return $this;
@@ -182,7 +179,7 @@ class Query
             $key,
             'IS NULL',
             null,
-            'OR'
+            AbstractCondition::TYPE_OR
         );
 
         return $this;
@@ -195,7 +192,7 @@ class Query
             $key,
             'IS NOT NULL',
             null,
-            'OR'
+            AbstractCondition::TYPE_OR
         );
 
         return $this;
@@ -203,14 +200,14 @@ class Query
 
     public function whereCallable(callable $callable): self
     {
-        $this->whereConditions[] = new CallableCondition($callable, 'AND');
+        $this->whereConditions[] = new CallableCondition($callable, AbstractCondition::TYPE_AND);
 
         return $this;
     }
 
     public function orWhereCallable(callable $callable): self
     {
-        $this->whereConditions[] = new CallableCondition($callable, 'OR');
+        $this->whereConditions[] = new CallableCondition($callable, AbstractCondition::TYPE_OR);
 
         return $this;
     }
@@ -261,16 +258,8 @@ class Query
 
     public function limit(int $limit, int $offset = null): self
     {
-        if ($limit === 0) {
-            $limit = null;
-        }
-
-        if ($offset === 0) {
-            $offset = null;
-        }
-
-        $this->limit = $limit;
-        $this->offset = $offset;
+        $this->limit = $limit > 0 ? $limit : null;
+        $this->offset = $offset > 0 ? $offset : null;
 
         return $this;
     }
@@ -285,9 +274,18 @@ class Query
         return $this->offset;
     }
 
-    /**
-     * @param string[] $keys
-     */
+    public function forceIndex(string $key): self
+    {
+        $this->forceIndex = $key;
+
+        return $this;
+    }
+
+    public function getForceIndex(): ?string
+    {
+        return $this->forceIndex;
+    }
+
     public function groupBy(string ...$keys): self
     {
         $this->groupBy = $keys;
@@ -374,9 +372,9 @@ class Query
         );
     }
 
-    public static function delete(string $tableName, ?string $tableAlias = null): self
+    public static function delete(string $tableName): self
     {
-        return new self(self::TYPE_DELETE, $tableName, $tableAlias);
+        return new self(self::TYPE_DELETE, $tableName);
     }
 
     public static function insert(string $tableName): self
@@ -384,9 +382,9 @@ class Query
         return new self(self::TYPE_INSERT, $tableName);
     }
 
-    public static function update(string $tableName, ?string $tableAlias = null): self
+    public static function update(string $tableName): self
     {
-        return new self(self::TYPE_UPDATE, $tableName, $tableAlias);
+        return new self(self::TYPE_UPDATE, $tableName);
     }
 
     public static function select(string $tableName, ?string $tableAlias = null): self

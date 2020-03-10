@@ -3,21 +3,21 @@
 namespace Parable\Query\Translator\Traits;
 
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 
 trait SupportsLimitTrait
 {
     protected function buildLimit(Query $query): string
     {
-        $string = '';
-
-        if ($query->getLimit() !== null) {
-            $string .= 'LIMIT ' . $query->getLimit();
+        if ($query->getLimit() === null) {
+            return '';
         }
 
-        if ($query->getLimit() !== null && $query->getOffset() !== null) {
-            $string .= ',' . $query->getOffset();
-        }
+        $queryParts = StringBuilder::fromArray([$query->getLimit(), $query->getOffset()], ',');
 
-        return $string;
+        return sprintf(
+            'LIMIT %s',
+            $queryParts->toString()
+        );
     }
 }

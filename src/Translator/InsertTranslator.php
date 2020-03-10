@@ -3,6 +3,7 @@
 namespace Parable\Query\Translator;
 
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 use Parable\Query\Translator\Traits\SupportsValuesTrait;
 use Parable\Query\TranslatorInterface;
 
@@ -17,12 +18,14 @@ class InsertTranslator extends AbstractTranslator implements TranslatorInterface
 
     public function translate(Query $query): string
     {
-        $parts = [
+        $queryParts = new StringBuilder();
+
+        $queryParts->add(
             'INSERT INTO',
             $this->quoteIdentifier($query->getTableName()),
-            $this->buildValues($query),
-        ];
+            $this->buildValues($query)
+        );
 
-        return trim(implode(' ', array_filter($parts)));
+        return $queryParts->toString();
     }
 }

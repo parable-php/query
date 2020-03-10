@@ -2,12 +2,14 @@
 
 namespace Parable\Query\Tests;
 
+use Parable\Query\Exception;
 use Parable\Query\ValueSet;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
-class ValueSetTest extends \PHPUnit\Framework\TestCase
+class ValueSetTest extends TestCase
 {
-    public function testValueSetCreation()
+    public function testValueSetCreation(): void
     {
         $valueSet = new ValueSet([
             'username' => 'amy',
@@ -19,7 +21,7 @@ class ValueSetTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testValueGetKeys()
+    public function testValueGetKeys(): void
     {
         $valueSet = new ValueSet([
             'username' => 'amy',
@@ -36,7 +38,7 @@ class ValueSetTest extends \PHPUnit\Framework\TestCase
      */
     public function testValueSetCreationFailsOnNonScalarValue($value, $expectedMessage)
     {
-        $this->expectException(\Parable\Query\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage($expectedMessage);
 
         new ValueSet([
@@ -44,7 +46,7 @@ class ValueSetTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testHasValues()
+    public function testHasValues(): void
     {
         $valueSet = new ValueSet([]);
 

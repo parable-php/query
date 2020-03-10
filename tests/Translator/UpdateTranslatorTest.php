@@ -5,6 +5,7 @@ namespace Parable\Query\Tests\Translator;
 use Parable\Query\Exception;
 use Parable\Query\Query;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
+use Parable\Query\Translator\Traits\SupportsForceIndexTrait;
 use Parable\Query\Translator\Traits\SupportsGroupByTrait;
 use Parable\Query\Translator\Traits\SupportsJoinTrait;
 use Parable\Query\Translator\Traits\SupportsLimitTrait;
@@ -14,22 +15,23 @@ use Parable\Query\Translator\Traits\SupportsWhereTrait;
 use Parable\Query\Translator\UpdateTranslator;
 use Parable\Query\ValueSet;
 use PDO;
+use PHPUnit\Framework\TestCase;
 
-class UpdateTranslatorTest extends \PHPUnit\Framework\TestCase
+class UpdateTranslatorTest extends TestCase
 {
     /**
      * @var UpdateTranslator
      */
     protected $translator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->translator = new UpdateTranslator(new PDO('sqlite::memory:'));
 
         parent::setUp();
     }
 
-    public function testAppropriateTraitsSet()
+    public function testAppropriateTraitsSet(): void
     {
         $traits = class_uses($this->translator);
 
@@ -38,6 +40,7 @@ class UpdateTranslatorTest extends \PHPUnit\Framework\TestCase
         self::assertContains(SupportsValuesTrait::class, $traits);
         self::assertContains(SupportsJoinTrait::class, $traits);
 
+        self::assertNotContains(SupportsForceIndexTrait::class, $traits);
         self::assertNotContains(SupportsGroupByTrait::class, $traits);
         self::assertNotContains(SupportsOrderByTrait::class, $traits);
         self::assertNotContains(SupportsLimitTrait::class, $traits);
@@ -46,14 +49,14 @@ class UpdateTranslatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider dpTranslatorTypes
      */
-    public function testTranslatorAcceptsCorrectly($type, $accepts)
+    public function testTranslatorAcceptsCorrectly($type, $accepts): void
     {
         $query = new Query($type, 'table', 't');
 
         self::assertSame($accepts, $this->translator->accepts($query));
     }
 
-    public function dpTranslatorTypes()
+    public function dpTranslatorTypes(): array
     {
         return [
             [Query::TYPE_DELETE, false],
@@ -63,7 +66,7 @@ class UpdateTranslatorTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testBasicQuery()
+    public function testBasicQuery(): void
     {
         $query = Query::update('table');
         $query->addValueSet(new ValueSet([
@@ -76,35 +79,22 @@ class UpdateTranslatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testBasicQueryWithAlias()
-    {
-        $query = Query::update('table', 't');
-        $query->addValueSet(new ValueSet([
-            'username' => 'test',
-        ]));
-
-        self::assertSame(
-            "UPDATE `table` `t` SET `username` = 'test'",
-            $this->translator->translate($query)
-        );
-    }
-
-    public function testNoValueSetsBreaks()
+    public function testNoValueSetsBreaks(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Update queries must contain exactly one value set, 0 provided.');
 
-        $query = Query::update('table', 't');
+        $query = Query::update('table');
 
         $this->translator->translate($query);
     }
 
-    public function testMultipleValueSetsBreaks()
+    public function testMultipleValueSetsBreaks(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Update queries must contain exactly one value set, 2 provided.');
 
-        $query = Query::update('table', 't');
+        $query = Query::update('table');
         $query->addValueSet(new ValueSet([
             'username' => 'test',
         ]));
@@ -115,16 +105,16 @@ class UpdateTranslatorTest extends \PHPUnit\Framework\TestCase
         $this->translator->translate($query);
     }
 
-    public function testNullValueIsParsedCorrectly()
+    public function testNullValueIsParsedCorrectly(): void
     {
-        $query = Query::update('table', 't');
+        $query = Query::update('table');
         $query->addValueSet(new ValueSet([
             'username' => null,
         ]));
 
         self::assertSame(
             $this->translator->translate($query),
-            'UPDATE `table` `t` SET `username` = NULL'
+            'UPDATE `table` SET `username` = NULL'
         );
     }
 }

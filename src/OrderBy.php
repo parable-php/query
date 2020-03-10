@@ -4,8 +4,8 @@ namespace Parable\Query;
 
 class OrderBy
 {
-    protected const ORDER_ASC = 1;
-    protected const ORDER_DESC = 2;
+    protected const ORDER_ASC = 'ASC';
+    protected const ORDER_DESC = 'DESC';
 
     /**
      * @var int
@@ -17,7 +17,7 @@ class OrderBy
      */
     protected $keys = [];
 
-    protected function __construct(int $direction, array $keys)
+    protected function __construct(string $direction, array $keys)
     {
         $this->direction = $direction;
 
@@ -28,9 +28,9 @@ class OrderBy
         $this->keys = $keys;
     }
 
-    public function getDirectionAsString(): string
+    public function getDirection(): string
     {
-        return $this->isAscending() ? 'ASC' : 'DESC';
+        return $this->direction;
     }
 
     public function getKeys(): array

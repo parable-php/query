@@ -3,6 +3,7 @@
 namespace Parable\Query\Translator\Traits;
 
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 
 trait SupportsGroupByTrait
 {
@@ -12,9 +13,11 @@ trait SupportsGroupByTrait
             return '';
         }
 
+        $groupParts = StringBuilder::fromArray($this->quotePrefixedIdentifiersFromArray($query, $query->getGroupBy()), ', ');
+
         return sprintf(
             'GROUP BY %s',
-            implode(', ', $this->quotePrefixedIdentifiersFromArray($query, $query->getGroupBy()))
+            $groupParts->toString()
         );
     }
 }

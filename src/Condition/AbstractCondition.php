@@ -9,9 +9,6 @@ abstract class AbstractCondition
     public const TYPE_AND = 'AND';
     public const TYPE_OR = 'OR';
 
-    public const VALUE_TYPE_VALUE = 1;
-    public const VALUE_TYPE_KEY = 2;
-
     /**
      * @var string
      */

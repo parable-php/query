@@ -3,6 +3,7 @@
 namespace Parable\Query\Translator;
 
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
 use Parable\Query\Translator\Traits\SupportsGroupByTrait;
 use Parable\Query\Translator\Traits\SupportsJoinTrait;
@@ -27,26 +28,18 @@ class DeleteTranslator extends AbstractTranslator implements TranslatorInterface
 
     public function translate(Query $query): string
     {
-        $parts = [];
+        $queryParts = new StringBuilder();
 
-        $parts[] = 'DELETE';
+        $queryParts->add(
+            'DELETE',
+            'FROM',
+            $this->quoteIdentifier($query->getTableName()),
+            $this->buildJoins($query),
+            $this->buildWhere($query),
+            $this->buildOrderBy($query),
+            $this->buildLimit($query)
+        );
 
-        if ($query->getTableAlias() !== null) {
-            $parts[] = $this->quoteIdentifier($query->getTableAlias());
-        }
-
-        $parts[] = 'FROM';
-        $parts[] = $this->quoteIdentifier($query->getTableName());
-
-        if ($query->getTableAlias() !== null) {
-            $parts[] = 'AS ' . $this->quoteIdentifier($query->getTableAlias());
-        }
-
-        $parts[] = $this->buildJoins($query);
-        $parts[] = $this->buildWhere($query);
-        $parts[] = $this->buildOrderBy($query);
-        $parts[] = $this->buildLimit($query);
-
-        return trim(implode(' ', array_filter($parts)));
+        return $queryParts->toString();
     }
 }

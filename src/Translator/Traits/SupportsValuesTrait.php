@@ -4,6 +4,7 @@ namespace Parable\Query\Translator\Traits;
 
 use Parable\Query\Exception;
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 use Parable\Query\ValueSet;
 
 trait SupportsValuesTrait
@@ -32,7 +33,7 @@ trait SupportsValuesTrait
 
         $valueSet = reset($valueSets);
 
-        $parts = [];
+        $parts = new StringBuilder(', ');
 
         foreach ($valueSet->getValues() as $key => $value) {
             if ($value === null) {
@@ -41,14 +42,14 @@ trait SupportsValuesTrait
                 $cleanValue = $this->quote($value);
             }
 
-            $parts[] = sprintf(
+            $parts->add(sprintf(
                 '%s = %s',
                 $this->quoteIdentifier($key),
                 $cleanValue
-            );
+            ));
         }
 
-        return 'SET ' . implode(', ', $parts);
+        return 'SET ' . $parts->toString();
     }
 
     protected function buildInsertValues(Query $query): string
@@ -57,21 +58,30 @@ trait SupportsValuesTrait
             throw new Exception('Insert queries must contain at least one value set.');
         }
 
-        $valueParts = [];
+        $valueParts = new StringBuilder();
 
         foreach ($query->getValueSets() as $valueSet) {
-            $valueParts[] = '(' . implode(', ', $this->quoteValuesFromArray($valueSet->getValues())) . ')';
+            $valueSetParts = StringBuilder::fromArray($this->quoteValuesFromArray($valueSet->getValues()), ', ');
+            $valueParts->add(sprintf(
+                '(%s)',
+                $valueSetParts->toString()
+            ));
         }
+
+        $keyParts = StringBuilder::fromArray($this->quoteIdentifiersFromArray($this->getKeysFromValueSets($query->getValueSets())), ', ');
 
         return sprintf(
             '(%s) VALUES %s',
-            implode(',', $this->quoteIdentifiersFromArray($this->getKeysFromValueSets($query->getValueSets()))),
-            implode(',', $valueParts)
+            $keyParts->toString(),
+            $valueParts->toString()
         );
     }
 
     /**
      * @param ValueSet[] $valueSets
+     *
+     * @return string[]
+     * @throws Exception
      */
     protected function getKeysFromValueSets(array $valueSets): array
     {

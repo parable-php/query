@@ -5,6 +5,7 @@ namespace Parable\Query\Tests\Translator;
 use Parable\Query\Query;
 use Parable\Query\Translator\DeleteTranslator;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
+use Parable\Query\Translator\Traits\SupportsForceIndexTrait;
 use Parable\Query\Translator\Traits\SupportsGroupByTrait;
 use Parable\Query\Translator\Traits\SupportsJoinTrait;
 use Parable\Query\Translator\Traits\SupportsLimitTrait;
@@ -12,22 +13,23 @@ use Parable\Query\Translator\Traits\SupportsOrderByTrait;
 use Parable\Query\Translator\Traits\SupportsValuesTrait;
 use Parable\Query\Translator\Traits\SupportsWhereTrait;
 use PDO;
+use PHPUnit\Framework\TestCase;
 
-class DeleteTranslatorTest extends \PHPUnit\Framework\TestCase
+class DeleteTranslatorTest extends TestCase
 {
     /**
      * @var DeleteTranslator
      */
     protected $translator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->translator = new DeleteTranslator(new PDO('sqlite::memory:'));
 
         parent::setUp();
     }
 
-    public function testAppropriateTraitsSet()
+    public function testAppropriateTraitsSet(): void
     {
         $traits = class_uses($this->translator);
 
@@ -38,20 +40,21 @@ class DeleteTranslatorTest extends \PHPUnit\Framework\TestCase
         self::assertContains(SupportsOrderByTrait::class, $traits);
         self::assertContains(SupportsLimitTrait::class, $traits);
 
+        self::assertNotContains(SupportsForceIndexTrait::class, $traits);
         self::assertNotContains(SupportsValuesTrait::class, $traits);
     }
 
     /**
      * @dataProvider dpTranslatorTypes
      */
-    public function testTranslatorAcceptsCorrectly($type, $accepts)
+    public function testTranslatorAcceptsCorrectly($type, $accepts): void
     {
         $query = new Query($type, 'table', 't');
 
         self::assertSame($accepts, $this->translator->accepts($query));
     }
 
-    public function dpTranslatorTypes()
+    public function dpTranslatorTypes(): array
     {
         return [
             [Query::TYPE_DELETE, true],
@@ -61,22 +64,12 @@ class DeleteTranslatorTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testDeleteBasicQuery()
+    public function testDeleteBasicQuery(): void
     {
         $query = Query::delete('table');
 
         self::assertSame(
             "DELETE FROM `table`",
-            $this->translator->translate($query)
-        );
-    }
-
-    public function testDeleteBasicQueryWithAlias()
-    {
-        $query = Query::delete('table', 't');
-
-        self::assertSame(
-            "DELETE `t` FROM `table` AS `t`",
             $this->translator->translate($query)
         );
     }

@@ -12,12 +12,12 @@ trait SupportsWhereTrait
             return '';
         }
 
-        $parts = $this->buildConditions($query, $query->getWhereConditions(), $recursion);
+        $conditionParts = $this->buildConditions($query, $query->getWhereConditions(), $recursion);
 
         if ($recursion === 0) {
-            array_unshift($parts, 'WHERE');
+            $conditionParts->prepend('WHERE');
         }
 
-        return implode(' ', $parts);
+        return $conditionParts->toString();
     }
 }

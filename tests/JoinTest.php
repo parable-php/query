@@ -7,10 +7,11 @@ use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Condition\ValueCondition;
 use Parable\Query\Join;
 use Parable\Query\Query;
+use PHPUnit\Framework\TestCase;
 
-class JoinTest extends \PHPUnit\Framework\TestCase
+class JoinTest extends TestCase
 {
-    public function testBasicJoinCreation()
+    public function testBasicJoinCreation(): void
     {
         $join = new Join('table', 't');
 
@@ -18,7 +19,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertSame('t', $join->getTableAlias());
     }
 
-    public function testGetTableAliasOrName()
+    public function testGetTableAliasOrName(): void
     {
         $join = new Join('table');
 
@@ -29,7 +30,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertSame('t', $join->getTableAliasOrName());
     }
 
-    public function testOnWithValueCondition()
+    public function testOnWithValueCondition(): void
     {
         $join = new Join('table', 't');
 
@@ -50,7 +51,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testOnKeyValue()
+    public function testOnKeyValue(): void
     {
         $join = new Join('table', 't');
 
@@ -71,7 +72,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertTrue($condition->isValueKey());
     }
 
-    public function testOrOnWithValueCondition()
+    public function testOrOnWithValueCondition(): void
     {
         $join = new Join('table', 't');
 
@@ -92,7 +93,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testOrOnKeyValue()
+    public function testOrOnKeyValue(): void
     {
         $join = new Join('table', 't');
 
@@ -113,7 +114,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertTrue($condition->isValueKey());
     }
 
-    public function testOnCallable()
+    public function testOnCallable(): void
     {
         $join = new Join('table', 't');
 
@@ -138,7 +139,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testOrOnCallable()
+    public function testOrOnCallable(): void
     {
         $join = new Join('table', 't');
 
@@ -163,7 +164,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testOnCondition()
+    public function testOnCondition(): void
     {
         $join = new Join('table', 't');
 
@@ -184,7 +185,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(CallableCondition::class, $callableCondition);
     }
 
-    public function testOnNullCondition()
+    public function testOnNullCondition(): void
     {
         $join = new Join('table', 't');
 
@@ -198,7 +199,7 @@ class JoinTest extends \PHPUnit\Framework\TestCase
         self::assertNull($onCondition->getValue());
     }
 
-    public function testOnNotNullCondition()
+    public function testOnNotNullCondition(): void
     {
         $join = new Join('table', 't');
 

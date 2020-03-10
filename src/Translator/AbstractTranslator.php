@@ -4,6 +4,7 @@ namespace Parable\Query\Translator;
 
 use Parable\Query\Exception;
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 use PDO;
 
 abstract class AbstractTranslator
@@ -25,7 +26,10 @@ abstract class AbstractTranslator
 
     protected function quoteIdentifier(string $string): string
     {
-        return '`' . trim($string, '`') . '`';
+        return sprintf(
+            '`%s`',
+            trim($string, '`')
+        );
     }
 
     protected function quoteIdentifierPrefixedKey(string $tableName, string $key): string
@@ -64,7 +68,7 @@ abstract class AbstractTranslator
         $quoted = [];
 
         foreach ($array as $key => $value) {
-            if ($value === '*' || is_numeric($value)) {
+            if ($value === '*' || ctype_digit($value)) {
                 $quoted[$key] = $value;
             } elseif ($this->extractSqlFunction($value) !== null) {
                 $quoted[$key] = $this->quoteIdentifiersFromSqlFunctionString($query, $value);
@@ -94,12 +98,12 @@ abstract class AbstractTranslator
 
         $values = explode(',', $values[1]);
 
-        $quotedValues = $this->quotePrefixedIdentifiersFromArray($query, $values);
+        $quotedValues = StringBuilder::fromArray($this->quotePrefixedIdentifiersFromArray($query, $values), ',');
 
         return sprintf(
             '%s(%s)',
             $function,
-            implode(',', $quotedValues)
+            $quotedValues->toString()
         );
     }
 

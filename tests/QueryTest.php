@@ -9,10 +9,11 @@ use Parable\Query\Join;
 use Parable\Query\OrderBy;
 use Parable\Query\Query;
 use Parable\Query\ValueSet;
+use PHPUnit\Framework\TestCase;
 
-class QueryTest extends \PHPUnit\Framework\TestCase
+class QueryTest extends TestCase
 {
-    public function testBasicQueryCreation()
+    public function testBasicQueryCreation(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -21,23 +22,22 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame('t', $query->getTableAlias());
     }
 
-    public function testQueryDoesntCareAboutType()
+    public function testQueryDoesntCareAboutType(): void
     {
         $query = new Query('NOPE', 'table', 't');
 
         self::assertSame('NOPE', $query->getType());
     }
 
-    public function testSpecificDeleteQueryCreation()
+    public function testSpecificDeleteQueryCreation(): void
     {
-        $query = Query::delete('table', 't');
+        $query = Query::delete('table');
 
         self::assertSame('DELETE', $query->getType());
         self::assertSame('table', $query->getTableName());
-        self::assertSame('t', $query->getTableAlias());
     }
 
-    public function testSpecificInsertQueryCreation()
+    public function testSpecificInsertQueryCreation(): void
     {
         $query = Query::insert('table');
 
@@ -45,7 +45,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame('table', $query->getTableName());
     }
 
-    public function testSpecificSelectQueryCreation()
+    public function testSpecificSelectQueryCreation(): void
     {
         $query = Query::select('table', 't');
 
@@ -54,7 +54,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame('t', $query->getTableAlias());
     }
 
-    public function testSpecificUpdateQueryCreation()
+    public function testSpecificUpdateQueryCreation(): void
     {
         $query = Query::update('table');
 
@@ -62,7 +62,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame('table', $query->getTableName());
     }
 
-    public function testGetTableAliasOrName()
+    public function testGetTableAliasOrName(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table');
 
@@ -73,14 +73,14 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame('t', $query->getTableAliasOrName());
     }
 
-    public function testGetColumnsEmptyByDefault()
+    public function testGetColumnsEmptyByDefault(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
         self::assertEmpty($query->getColumns());
     }
 
-    public function testGetSetColumns()
+    public function testGetSetColumns(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -92,7 +92,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testWhere()
+    public function testWhere(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -113,7 +113,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testWhereNull()
+    public function testWhereNull(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -134,7 +134,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testWhereNotNull()
+    public function testWhereNotNull(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -155,7 +155,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testOrWhere()
+    public function testOrWhere(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -176,7 +176,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testOrWhereNull()
+    public function testOrWhereNull(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -197,7 +197,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testOrWhereNotNull()
+    public function testOrWhereNotNull(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -218,7 +218,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testWhereCallable()
+    public function testWhereCallable(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -243,7 +243,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testOrWhereCallable()
+    public function testOrWhereCallable(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -268,7 +268,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertFalse($condition->isValueKey());
     }
 
-    public function testWhereCondition()
+    public function testWhereCondition(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -289,7 +289,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertInstanceOf(CallableCondition::class, $callableCondition);
     }
 
-    public function testLimitAndOffset()
+    public function testLimitAndOffset(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -299,7 +299,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame(5, $query->getOffset());
     }
 
-    public function testLimitAndOffsetSetTo0MeansNoLimitAndOffset()
+    public function testLimitAndOffsetSetTo0MeansNoLimitAndOffset(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -317,7 +317,18 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertNull($query->getOffset());
     }
 
-    public function testGroupBy()
+    public function testForceIndex(): void
+    {
+        $query = new Query(Query::TYPE_SELECT, 'table', 't');
+
+        self::assertNull($query->getForceIndex());
+
+        $query->forceIndex('id');
+
+        self::assertSame('id', $query->getForceIndex());
+    }
+
+    public function testGroupBy(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -329,7 +340,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testOrderByIsAscendingByDefault()
+    public function testOrderByIsAscendingByDefault(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -340,7 +351,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame(['username'], $query->getOrderBy()[0]->getKeys());
     }
 
-    public function testOrderByDescending()
+    public function testOrderByDescending(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
@@ -351,7 +362,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame(['username'], $query->getOrderBy()[0]->getKeys());
     }
 
-    public function testInnerJoin()
+    public function testInnerJoin(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
         $join = new Join('join_table', 'jt');
@@ -366,7 +377,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame($join, $joinFromQuery);
     }
 
-    public function testLeftJoin()
+    public function testLeftJoin(): void
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
         $join = new Join('join_table', 'jt');
@@ -381,7 +392,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame($join, $joinFromQuery);
     }
 
-    public function testCountValueSets()
+    public function testCountValueSets(): void
     {
         $query = new Query(Query::TYPE_UPDATE, 'table', 't');
 
@@ -392,7 +403,7 @@ class QueryTest extends \PHPUnit\Framework\TestCase
         self::assertSame(1, $query->countValueSets());
     }
 
-    public function testHasValueSets()
+    public function testHasValueSets(): void
     {
         $query = new Query(Query::TYPE_UPDATE, 'table', 't');
 

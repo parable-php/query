@@ -3,7 +3,9 @@
 namespace Parable\Query\Translator;
 
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
+use Parable\Query\Translator\Traits\SupportsForceIndexTrait;
 use Parable\Query\Translator\Traits\SupportsGroupByTrait;
 use Parable\Query\Translator\Traits\SupportsJoinTrait;
 use Parable\Query\Translator\Traits\SupportsLimitTrait;
@@ -14,6 +16,7 @@ use Parable\Query\TranslatorInterface;
 class SelectTranslator extends AbstractTranslator implements TranslatorInterface
 {
     use HasConditionsTrait;
+    use SupportsForceIndexTrait;
     use SupportsJoinTrait;
     use SupportsWhereTrait;
     use SupportsGroupByTrait;
@@ -27,29 +30,33 @@ class SelectTranslator extends AbstractTranslator implements TranslatorInterface
 
     public function translate(Query $query): string
     {
-        $parts = [];
+        $queryParts = new StringBuilder();
 
-        $parts[] = 'SELECT';
+        $queryParts->add('SELECT');
 
         if (!empty($query->getColumns())) {
-            $parts[] = implode(', ', $this->quotePrefixedIdentifiersFromArray($query, $query->getColumns()));
+            $quotedColumns = $this->quotePrefixedIdentifiersFromArray($query, $query->getColumns());
+
+            $queryParts->add(StringBuilder::fromArray($quotedColumns, ', ')->toString());
         } else {
-            $parts[] = '*';
+            $queryParts->add('*');
         }
 
-        $parts[] = 'FROM';
-        $parts[] = $this->quoteIdentifier($query->getTableName());
+        $queryParts->add('FROM', $this->quoteIdentifier($query->getTableName()));
 
         if ($query->getTableAlias() !== null) {
-            $parts[] = 'AS ' . $this->quoteIdentifier($query->getTableAlias());
+            $queryParts->add($this->quoteIdentifier($query->getTableAlias()));
         }
 
-        $parts[] = $this->buildJoins($query);
-        $parts[] = $this->buildWhere($query);
-        $parts[] = $this->buildGroupBy($query);
-        $parts[] = $this->buildOrderBy($query);
-        $parts[] = $this->buildLimit($query);
+        $queryParts->add(
+            $this->buildForceIndex($query),
+            $this->buildJoins($query),
+            $this->buildWhere($query),
+            $this->buildGroupBy($query),
+            $this->buildOrderBy($query),
+            $this->buildLimit($query)
+        );
 
-        return trim(implode(' ', array_filter($parts)));
+        return $queryParts->toString();
     }
 }

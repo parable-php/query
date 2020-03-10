@@ -3,108 +3,128 @@
 namespace Parable\Query\Tests;
 
 use Parable\Query\Builder;
+use Parable\Query\Exception;
 use Parable\Query\Query;
+use Parable\Query\Tests\Classes\NonsenseTranslator;
 use Parable\Query\ValueSet;
 use PDO;
+use PDOStatement;
+use PHPUnit\Framework\TestCase;
 
-class BuilderTest extends \PHPUnit\Framework\TestCase
+class BuilderTest extends TestCase
 {
+    /** @var PDO */
+    protected $pdo;
+
     /**
      * @var Builder
      */
     protected $builder;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->builder = new Builder(new PDO('sqlite::memory:'));
+        $this->pdo = new PDO('sqlite::memory:');
+
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $this->pdo->query("
+            CREATE TABLE `users` (
+              `id` INTEGER PRIMARY KEY,
+              `username` TEXT NOT NULL
+            );
+        ");
+
+        $this->builder = new Builder($this->pdo);
 
         parent::setUp();
     }
 
-    public function testDeleteBasicQuery()
+    public function testDeleteBasicQuery(): void
     {
-        $query = Query::delete('table');
+        $query = Query::delete('users');
 
         self::assertSame(
-            "DELETE FROM `table`",
+            "DELETE FROM `users`",
             $this->builder->build($query)
         );
+
+        self::assertInstanceOf(PDOStatement::class, $this->pdo->query($this->builder->build($query)));
     }
 
-    public function testDeleteBasicQueryWithAlias()
+    public function testInsertBasicQuery(): void
     {
-        $query = Query::delete('table', 't');
-
-        self::assertSame(
-            "DELETE `t` FROM `table` AS `t`",
-            $this->builder->build($query)
-        );
-    }
-
-    public function testInsertBasicQuery()
-    {
-        $query = Query::insert('table');
+        $query = Query::insert('users');
         $query->addValueSet(new ValueSet([
             'username' => 'test',
         ]));
 
         self::assertSame(
-            "INSERT INTO `table` (`username`) VALUES ('test')",
+            "INSERT INTO `users` (`username`) VALUES ('test')",
             $this->builder->build($query)
         );
+
+        self::assertInstanceOf(PDOStatement::class, $this->pdo->query($this->builder->build($query)));
     }
 
-    public function testSelectBasicQuery()
+    public function testSelectBasicQuery(): void
     {
-        $query = Query::select('table');
+        $query = Query::select('users');
 
         self::assertSame(
-            "SELECT * FROM `table`",
+            "SELECT * FROM `users`",
             $this->builder->build($query)
         );
+
+        self::assertInstanceOf(PDOStatement::class, $this->pdo->query($this->builder->build($query)));
     }
 
-    public function testSelectBasicQueryWithAlias()
+    public function testSelectBasicQueryWithAlias(): void
     {
-        $query = Query::select('table', 't');
+        $query = Query::select('users', 'u');
 
         self::assertSame(
-            "SELECT * FROM `table` AS `t`",
+            "SELECT * FROM `users` `u`",
             $this->builder->build($query)
         );
+
+        self::assertInstanceOf(PDOStatement::class, $this->pdo->query($this->builder->build($query)));
     }
 
-    public function testUpdateBasicQuery()
+    public function testUpdateBasicQuery(): void
     {
-        $query = Query::update('table');
+        $query = Query::update('users');
         $query->addValueSet(new ValueSet([
             'username' => 'test',
         ]));
 
         self::assertSame(
-            "UPDATE `table` SET `username` = 'test'",
+            "UPDATE `users` SET `username` = 'test'",
             $this->builder->build($query)
         );
+
+        self::assertInstanceOf(PDOStatement::class, $this->pdo->query($this->builder->build($query)));
     }
 
-    public function testUpdateBasicQueryWithAlias()
+    public function testNonsenseTypeQueryThrows(): void
     {
-        $query = Query::update('table', 't');
-        $query->addValueSet(new ValueSet([
-            'username' => 'test',
-        ]));
-
-        self::assertSame(
-            "UPDATE `table` `t` SET `username` = 'test'",
-            $this->builder->build($query)
-        );
-    }
-
-    public function testNonsenseTypeQueryThrows()
-    {
-        $this->expectException(\Parable\Query\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Could not find suitable translator for query with type: NONSENSE');
 
-        $this->builder->build(new Query('NONSENSE', 'table'));
+        $this->builder->build(new Query('NONSENSE', 'users'));
+    }
+
+    public function testBuilderCanHaveAddtionalTranslators(): void
+    {
+        $builder = new class ($this->pdo) extends Builder {
+            protected function getTranslators(): array
+            {
+                return array_merge(
+                    parent::getTranslators(),
+                    [NonsenseTranslator::class]
+                );
+            }
+        };
+
+        self::assertSame('Nonsense query!', $builder->build(new Query('NONSENSE', 'users')));
     }
 }

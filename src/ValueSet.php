@@ -35,13 +35,13 @@ class ValueSet
         return $this->values;
     }
 
-    public function hasValues(): bool
-    {
-        return count($this->values) > 0;
-    }
-
     public function getKeys(): array
     {
         return array_keys($this->values);
+    }
+
+    public function hasValues(): bool
+    {
+        return count($this->values) > 0;
     }
 }

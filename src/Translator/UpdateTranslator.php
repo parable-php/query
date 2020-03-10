@@ -3,6 +3,7 @@
 namespace Parable\Query\Translator;
 
 use Parable\Query\Query;
+use Parable\Query\StringBuilder;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
 use Parable\Query\Translator\Traits\SupportsJoinTrait;
 use Parable\Query\Translator\Traits\SupportsValuesTrait;
@@ -23,19 +24,23 @@ class UpdateTranslator extends AbstractTranslator implements TranslatorInterface
 
     public function translate(Query $query): string
     {
-        $parts = [
+        $queryParts = new StringBuilder();
+
+        $queryParts->add(
             'UPDATE',
-            $this->quoteIdentifier($query->getTableName()),
-        ];
+            $this->quoteIdentifier($query->getTableName())
+        );
 
         if ($query->getTableAlias() !== null) {
-            $parts[] = $this->quoteIdentifier($query->getTableAlias());
+            $queryParts->add($this->quoteIdentifier($query->getTableAlias()));
         }
 
-        $parts[] = $this->buildJoins($query);
-        $parts[] = $this->buildValues($query);
-        $parts[] = $this->buildWhere($query);
+        $queryParts->add(
+            $this->buildJoins($query),
+            $this->buildValues($query),
+            $this->buildWhere($query)
+        );
 
-        return trim(implode(' ', array_filter($parts)));
+        return $queryParts->toString();
     }
 }

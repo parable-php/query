@@ -6,6 +6,7 @@ use Parable\Query\Exception;
 use Parable\Query\Query;
 use Parable\Query\Translator\InsertTranslator;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
+use Parable\Query\Translator\Traits\SupportsForceIndexTrait;
 use Parable\Query\Translator\Traits\SupportsGroupByTrait;
 use Parable\Query\Translator\Traits\SupportsJoinTrait;
 use Parable\Query\Translator\Traits\SupportsLimitTrait;
@@ -14,28 +15,30 @@ use Parable\Query\Translator\Traits\SupportsValuesTrait;
 use Parable\Query\Translator\Traits\SupportsWhereTrait;
 use Parable\Query\ValueSet;
 use PDO;
+use PHPUnit\Framework\TestCase;
 
-class InsertTranslatorTest extends \PHPUnit\Framework\TestCase
+class InsertTranslatorTest extends TestCase
 {
     /**
      * @var InsertTranslator
      */
     protected $translator;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->translator = new InsertTranslator(new PDO('sqlite::memory:'));
 
         parent::setUp();
     }
 
-    public function testAppropriateTraitsSet()
+    public function testAppropriateTraitsSet(): void
     {
         $traits = class_uses($this->translator);
 
         self::assertContains(SupportsValuesTrait::class, $traits);
 
         self::assertNotContains(HasConditionsTrait::class, $traits);
+        self::assertNotContains(SupportsForceIndexTrait::class, $traits);
         self::assertNotContains(SupportsJoinTrait::class, $traits);
         self::assertNotContains(SupportsWhereTrait::class, $traits);
         self::assertNotContains(SupportsGroupByTrait::class, $traits);
@@ -46,14 +49,14 @@ class InsertTranslatorTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider dpTranslatorTypes
      */
-    public function testTranslatorAcceptsCorrectly($type, $accepts)
+    public function testTranslatorAcceptsCorrectly($type, $accepts): void
     {
         $query = new Query($type, 'table', 't');
 
         self::assertSame($accepts, $this->translator->accepts($query));
     }
 
-    public function dpTranslatorTypes()
+    public function dpTranslatorTypes(): array
     {
         return [
             [Query::TYPE_DELETE, false],
@@ -63,7 +66,7 @@ class InsertTranslatorTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testInsertBasicQuery()
+    public function testInsertBasicQuery(): void
     {
         $query = Query::insert('table');
         $query->addValueSet(new ValueSet([
@@ -76,7 +79,7 @@ class InsertTranslatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testNoValueSetsBreaks()
+    public function testNoValueSetsBreaks(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Insert queries must contain at least one value set.');
@@ -86,7 +89,7 @@ class InsertTranslatorTest extends \PHPUnit\Framework\TestCase
         $this->translator->translate($query);
     }
 
-    public function testMultipleNonMatchingValueSetsBreaks()
+    public function testMultipleNonMatchingValueSetsBreaks(): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage('Not all value sets match on keys: username');

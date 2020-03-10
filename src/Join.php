@@ -55,7 +55,7 @@ class Join
             $joinKey,
             $comparator,
             $value,
-            'AND',
+            AbstractCondition::TYPE_AND,
             false
         );
 
@@ -69,7 +69,7 @@ class Join
             $joinKey,
             $comparator,
             $value,
-            'OR',
+            AbstractCondition::TYPE_OR,
             false
         );
 
@@ -83,7 +83,7 @@ class Join
             $key,
             'IS NULL',
             null,
-            'AND',
+            AbstractCondition::TYPE_AND,
             false
         );
 
@@ -97,7 +97,7 @@ class Join
             $key,
             'IS NOT NULL',
             null,
-            'AND',
+            AbstractCondition::TYPE_AND,
             false
         );
 
@@ -111,7 +111,7 @@ class Join
             $key,
             $comparator,
             $queryKey,
-            'AND',
+            AbstractCondition::TYPE_AND,
             true
         );
 
@@ -125,7 +125,7 @@ class Join
             $key,
             $comparator,
             $queryKey,
-            'OR',
+            AbstractCondition::TYPE_OR,
             true
         );
 
@@ -134,14 +134,14 @@ class Join
 
     public function onCallable(callable $callable): self
     {
-        $this->onConditions[] = new CallableCondition($callable, 'AND');
+        $this->onConditions[] = new CallableCondition($callable, AbstractCondition::TYPE_AND);
 
         return $this;
     }
 
     public function orOnCallable(callable $callable): self
     {
-        $this->onConditions[] = new CallableCondition($callable, 'OR');
+        $this->onConditions[] = new CallableCondition($callable, AbstractCondition::TYPE_OR);
 
         return $this;
     }
