@@ -58,7 +58,7 @@ trait SupportsValuesTrait
             throw new Exception('Insert queries must contain at least one value set.');
         }
 
-        $valueParts = new StringBuilder();
+        $valueParts = new StringBuilder(', ');
 
         foreach ($query->getValueSets() as $valueSet) {
             $valueSetParts = StringBuilder::fromArray($this->quoteValuesFromArray($valueSet->getValues()), ', ');

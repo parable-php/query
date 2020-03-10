@@ -1,5 +1,10 @@
 # Parable PHP Query
 
+## 0.3.1
+
+_Bugfixes_
+- `buildInsertValues()` used the wrong glue to implode value sets.
+
 ## 0.3.0
 
 _Changes_

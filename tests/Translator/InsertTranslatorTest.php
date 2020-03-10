@@ -79,6 +79,22 @@ class InsertTranslatorTest extends TestCase
         );
     }
 
+    public function testInsertWithMultipleValues(): void
+    {
+        $query = Query::insert('table');
+        $query->addValueSet(new ValueSet([
+            'username' => 'test1',
+        ]));
+        $query->addValueSet(new ValueSet([
+            'username' => 'test2',
+        ]));
+
+        self::assertSame(
+            "INSERT INTO `table` (`username`) VALUES ('test')",
+            $this->translator->translate($query)
+        );
+    }
+
     public function testNoValueSetsBreaks(): void
     {
         $this->expectException(Exception::class);
