@@ -68,7 +68,12 @@ trait SupportsValuesTrait
             ));
         }
 
-        $keyParts = StringBuilder::fromArray($this->quoteIdentifiersFromArray($this->getKeysFromValueSets($query->getValueSets())), ', ');
+        $keyParts = StringBuilder::fromArray(
+            $this->quoteIdentifiersFromArray(
+                $this->getKeysFromValueSets($query->getValueSets())
+            ),
+            ', '
+        );
 
         return sprintf(
             '(%s) VALUES %s',

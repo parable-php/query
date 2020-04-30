@@ -90,7 +90,7 @@ class InsertTranslatorTest extends TestCase
         ]));
 
         self::assertSame(
-            "INSERT INTO `table` (`username`) VALUES ('test')",
+            "INSERT INTO `table` (`username`) VALUES ('test1'), ('test2')",
             $this->translator->translate($query)
         );
     }
