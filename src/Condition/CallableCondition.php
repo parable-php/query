@@ -4,9 +4,7 @@ namespace Parable\Query\Condition;
 
 class CallableCondition extends AbstractCondition
 {
-    /**
-     * @var callable
-     */
+    /** @var callable */
     protected $callable;
 
     public function __construct(

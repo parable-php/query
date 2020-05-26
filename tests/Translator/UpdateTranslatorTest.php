@@ -19,9 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class UpdateTranslatorTest extends TestCase
 {
-    /**
-     * @var UpdateTranslator
-     */
+    /** @var UpdateTranslator */
     protected $translator;
 
     public function setUp(): void

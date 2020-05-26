@@ -31,10 +31,6 @@ class UpdateTranslator extends AbstractTranslator implements TranslatorInterface
             $this->quoteIdentifier($query->getTableName())
         );
 
-        if ($query->getTableAlias() !== null) {
-            $queryParts->add($this->quoteIdentifier($query->getTableAlias()));
-        }
-
         $queryParts->add(
             $this->buildJoins($query),
             $this->buildValues($query),

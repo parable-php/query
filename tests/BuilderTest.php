@@ -16,9 +16,7 @@ class BuilderTest extends TestCase
     /** @var PDO */
     protected $pdo;
 
-    /**
-     * @var Builder
-     */
+    /** @var Builder */
     protected $builder;
 
     public function setUp(): void

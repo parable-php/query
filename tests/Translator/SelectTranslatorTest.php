@@ -20,9 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class SelectTranslatorTest extends TestCase
 {
-    /**
-     * @var SelectTranslator
-     */
+    /** @var SelectTranslator */
     protected $translator;
 
     public function setUp(): void
@@ -468,6 +466,27 @@ class SelectTranslatorTest extends TestCase
         self::assertTrue($this->translator->accepts($query));
         self::assertSame(
             "SELECT `u`.`id`, `u`.`lastname`, `u`.`firstname`, `p`.`id`, `p`.`website` FROM `users` `u` FORCE INDEX (PRIMARY) LEFT JOIN `profile` `p` ON (`u`.`id` = `p`.`user_id` AND `u`.`updated_at` IS NULL) WHERE `u`.`lastname` = 'McTest' AND (`u`.`firstname` = 'John' OR `u`.`firstname` = 'Amy') GROUP BY `u`.`lastname` ORDER BY `u`.`id` DESC, `p`.`id` ASC, `u`.`lastname` ASC LIMIT 50,10",
+            $this->translator->translate($query)
+        );
+    }
+
+    public function testStringableThingsAreActuallyStringified(): void
+    {
+        $stringable = new class {
+            public function __toString(): string
+            {
+                return 'john';
+            }
+        };
+
+        $query = Query::select('users', 'u');
+
+        $query->setColumns('lastname');
+        $query->where('lastname', '=', $stringable);
+
+        self::assertTrue($this->translator->accepts($query));
+        self::assertSame(
+            "SELECT `u`.`lastname` FROM `users` `u` WHERE `u`.`lastname` = 'john'",
             $this->translator->translate($query)
         );
     }

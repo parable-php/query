@@ -33,6 +33,7 @@ trait HasConditionsTrait
                 }
 
                 $conditionParts->add($part);
+
                 continue;
             }
 
@@ -74,7 +75,7 @@ trait HasConditionsTrait
                 '(%s)',
                 StringBuilder::fromArray($this->quoteValuesFromArray($condition->getValue()), ',')->toString()
             );
-        } elseif (is_string($condition->getValue())) {
+        } elseif ($this->isStringLike($condition->getValue())) {
             $value = $this->quote($condition->getValue());
         }
 
@@ -84,5 +85,18 @@ trait HasConditionsTrait
             $condition->getComparator(),
             $value
         );
+    }
+
+    private function isStringLike($value): bool
+    {
+        if (is_string($value)) {
+            return true;
+        }
+
+        if (is_object($value) && method_exists($value, '__toString')) {
+            return true;
+        }
+
+        return false;
     }
 }

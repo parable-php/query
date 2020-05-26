@@ -10,9 +10,7 @@ use PDO;
 
 class Builder
 {
-    /**
-     * @var PDO
-     */
+    /** @var PDO */
     protected $connection;
 
     public function __construct(PDO $connection)

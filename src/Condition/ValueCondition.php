@@ -4,24 +4,16 @@ namespace Parable\Query\Condition;
 
 class ValueCondition extends AbstractCondition
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $tableName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $key;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $comparator;
 
-    /**
-     * @var mixed
-     */
+    /** @var mixed */
     protected $value;
 
     public function __construct(

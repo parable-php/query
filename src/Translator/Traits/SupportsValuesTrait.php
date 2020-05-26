@@ -13,7 +13,9 @@ trait SupportsValuesTrait
     {
         if ($query->getType() === Query::TYPE_UPDATE) {
             return $this->buildUpdateVales($query);
-        } elseif ($query->getType() === Query::TYPE_INSERT) {
+        }
+
+        if ($query->getType() === Query::TYPE_INSERT) {
             return $this->buildInsertValues($query);
         }
 

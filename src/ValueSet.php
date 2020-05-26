@@ -4,9 +4,7 @@ namespace Parable\Query;
 
 class ValueSet
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $values = [];
 
     public function __construct(array $values = [])

@@ -8,19 +8,13 @@ use Parable\Query\Condition\ValueCondition;
 
 class Join
 {
-    /**
-     * @var string|null
-     */
+    /** @var string */
     protected $tableName;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     protected $tableAlias;
 
-    /**
-     * @var ValueCondition[]|CallableCondition[]
-     */
+    /** @var ValueCondition[]|CallableCondition[] */
     protected $onConditions = [];
 
     public function __construct(string $tableName, ?string $tableAlias = null)

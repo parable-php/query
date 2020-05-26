@@ -13,7 +13,10 @@ trait SupportsGroupByTrait
             return '';
         }
 
-        $groupParts = StringBuilder::fromArray($this->quotePrefixedIdentifiersFromArray($query, $query->getGroupBy()), ', ');
+        $groupParts = StringBuilder::fromArray(
+            $this->quotePrefixedIdentifiersFromArray($query, $query->getGroupBy()),
+            ', '
+        );
 
         return sprintf(
             'GROUP BY %s',

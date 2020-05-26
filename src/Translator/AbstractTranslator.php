@@ -9,9 +9,7 @@ use PDO;
 
 abstract class AbstractTranslator
 {
-    /**
-     * @var PDO
-     */
+    /** @var PDO */
     protected $connection;
 
     public function __construct(PDO $connection)
