@@ -1,9 +1,10 @@
 # Parable PHP Query
 
-## 0.3.2
+## 0.3.2 & 0.3.3
 
 - Removed unnecessary check whether an update query had an alias.
 - Fixed bug where values that implemented `__toString()` were not correctly identified as such, and would remain unquoted.
+- Fixed test assert value to be more specific.
 
 ## 0.3.1
 
