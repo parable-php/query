@@ -1,5 +1,10 @@
 # Parable PHP Query
 
+## 0.4.0
+
+_Changes_
+- Dropped support for php7, php8 only from now on.
+
 ## 0.3.2 & 0.3.3
 
 - Removed unnecessary check whether an update query had an alias.
