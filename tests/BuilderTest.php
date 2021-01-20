@@ -13,11 +13,8 @@ use PHPUnit\Framework\TestCase;
 
 class BuilderTest extends TestCase
 {
-    /** @var PDO */
-    protected $pdo;
-
-    /** @var Builder */
-    protected $builder;
+    protected PDO $pdo;
+    protected Builder $builder;
 
     public function setUp(): void
     {
@@ -25,7 +22,7 @@ class BuilderTest extends TestCase
 
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $this->pdo->query("
+        $this->pdo->exec("
             CREATE TABLE `users` (
               `id` INTEGER PRIMARY KEY,
               `username` TEXT NOT NULL

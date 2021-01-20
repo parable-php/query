@@ -130,7 +130,7 @@ class QueryTest extends TestCase
         self::assertSame(AbstractCondition::TYPE_AND, $condition->getType());
         self::assertSame('username', $condition->getKey());
         self::assertSame('IS NULL', $condition->getComparator());
-        self::assertSame(null, $condition->getValue());
+        self::assertNull($condition->getValue());
         self::assertFalse($condition->isValueKey());
     }
 
@@ -151,7 +151,7 @@ class QueryTest extends TestCase
         self::assertSame(AbstractCondition::TYPE_AND, $condition->getType());
         self::assertSame('username', $condition->getKey());
         self::assertSame('IS NOT NULL', $condition->getComparator());
-        self::assertSame(null, $condition->getValue());
+        self::assertNull($condition->getValue());
         self::assertFalse($condition->isValueKey());
     }
 
@@ -193,7 +193,7 @@ class QueryTest extends TestCase
         self::assertSame(AbstractCondition::TYPE_OR, $condition->getType());
         self::assertSame('username', $condition->getKey());
         self::assertSame('IS NULL', $condition->getComparator());
-        self::assertSame(null, $condition->getValue());
+        self::assertNull($condition->getValue());
         self::assertFalse($condition->isValueKey());
     }
 
@@ -214,7 +214,7 @@ class QueryTest extends TestCase
         self::assertSame(AbstractCondition::TYPE_OR, $condition->getType());
         self::assertSame('username', $condition->getKey());
         self::assertSame('IS NOT NULL', $condition->getComparator());
-        self::assertSame(null, $condition->getValue());
+        self::assertNull($condition->getValue());
         self::assertFalse($condition->isValueKey());
     }
 
@@ -222,7 +222,7 @@ class QueryTest extends TestCase
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
-        $query->whereCallable(function(Query $query) {
+        $query->whereCallable(static function(Query $query) {
             return $query->getTableName();
         });
 
@@ -247,7 +247,7 @@ class QueryTest extends TestCase
     {
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
-        $query->orWhereCallable(function(Query $query) {
+        $query->orWhereCallable(static function(Query $query) {
             return $query->getTableName();
         });
 
@@ -273,7 +273,7 @@ class QueryTest extends TestCase
         $query = new Query(Query::TYPE_SELECT, 'table', 't');
 
         $query->whereCondition(new ValueCondition('table', 'user_id', '=', 'u.id'));
-        $query->whereCondition(new CallableCondition(function(Query $query) {
+        $query->whereCondition(new CallableCondition(static function(Query $query) {
             $query->where('test', '=', 1);
         }));
 

@@ -118,7 +118,7 @@ class JoinTest extends TestCase
     {
         $join = new Join('table', 't');
 
-        $join->onCallable(function(Query $query) {
+        $join->onCallable(static function(Query $query) {
             return $query->getTableName();
         });
 
@@ -143,7 +143,7 @@ class JoinTest extends TestCase
     {
         $join = new Join('table', 't');
 
-        $join->orOnCallable(function(Query $query) {
+        $join->orOnCallable(static function(Query $query) {
             return $query->getTableName();
         });
 
@@ -169,7 +169,7 @@ class JoinTest extends TestCase
         $join = new Join('table', 't');
 
         $join->onCondition(new ValueCondition('table', 'user_id', '=', 'u.id', AbstractCondition::TYPE_AND, true));
-        $join->onCondition(new CallableCondition(function(Query $query) {
+        $join->onCondition(new CallableCondition(static function(Query $query) {
             $query->where('test', '=', 1);
         }));
 

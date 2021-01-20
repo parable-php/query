@@ -17,8 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 class DeleteTranslatorTest extends TestCase
 {
-    /** @var DeleteTranslator */
-    protected $translator;
+    protected DeleteTranslator $translator;
 
     public function setUp(): void
     {

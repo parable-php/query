@@ -20,8 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class SelectTranslatorTest extends TestCase
 {
-    /** @var SelectTranslator */
-    protected $translator;
+    protected SelectTranslator $translator;
 
     public function setUp(): void
     {
@@ -48,7 +47,7 @@ class SelectTranslatorTest extends TestCase
     /**
      * @dataProvider dpTranslatorTypes
      */
-    public function testTranslatorAcceptsCorrectly($type, $accepts): void
+    public function testTranslatorAcceptsCorrectly(string $type, bool $accepts): void
     {
         $query = new Query($type, 'table', 't');
 
@@ -390,7 +389,7 @@ class SelectTranslatorTest extends TestCase
     public function testWhereCallable(): void
     {
         $query = Query::select('table', 't');
-        $query->whereCallable(function(Query $query) {
+        $query->whereCallable(static function(Query $query) {
             $query->where('username', '=', 'amy');
             $query->orWhere('username', '=', 'john');
         });
@@ -404,9 +403,9 @@ class SelectTranslatorTest extends TestCase
     public function testWhereCallableNested(): void
     {
         $query = Query::select('table', 't');
-        $query->whereCallable(function(Query $query) {
+        $query->whereCallable(static function(Query $query) {
             $query->where('username', '=', 'amy');
-            $query->orWhereCallable(function(Query $query) {
+            $query->orWhereCallable(static function(Query $query) {
                 $query->where('test', '=', 'why');
             });
         });
@@ -424,11 +423,11 @@ class SelectTranslatorTest extends TestCase
 
         $query = Query::select('table', 't');
 
-        $query->whereCallable(function(Query $query) {
-            $query->orWhereCallable(function(Query $query) {
-                $query->orWhereCallable(function(Query $query) {
-                    $query->orWhereCallable(function(Query $query) {
-                        $query->orWhereCallable(function(Query $query) {
+        $query->whereCallable(static function(Query $query) {
+            $query->orWhereCallable(static function(Query $query) {
+                $query->orWhereCallable(static function(Query $query) {
+                    $query->orWhereCallable(static function(Query $query) {
+                        $query->orWhereCallable(static function(Query $query) {
                             $query->where('test', '=', 'why');
                         });
                     });
@@ -446,7 +445,7 @@ class SelectTranslatorTest extends TestCase
         $query->setColumns('id','lastname','firstname','p.id','p.website');
         $query->forceIndex(Query::PRIMARY_KEY_INDEX);
         $query->where('lastname', '=', 'McTest');
-        $query->whereCallable(function(Query $query) {
+        $query->whereCallable(static function(Query $query) {
             $query->where('firstname', '=', 'John');
             $query->orWhere('firstname', '=', 'Amy');
         });

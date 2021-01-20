@@ -7,11 +7,10 @@ class OrderBy
     protected const ORDER_ASC = 'ASC';
     protected const ORDER_DESC = 'DESC';
 
-    /** @var int */
-    protected $direction;
+    protected string $direction;
 
     /** @var string[] */
-    protected $keys = [];
+    protected array $keys = [];
 
     protected function __construct(string $direction, array $keys)
     {

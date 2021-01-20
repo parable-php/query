@@ -36,7 +36,7 @@ class ValueSetTest extends TestCase
     /**
      * @dataProvider dpInvalidValuesForSet
      */
-    public function testValueSetCreationFailsOnNonScalarValue($value, $expectedMessage)
+    public function testValueSetCreationFailsOnNonScalarValue($value, string $expectedMessage): void
     {
         $this->expectException(Exception::class);
         $this->expectExceptionMessage($expectedMessage);

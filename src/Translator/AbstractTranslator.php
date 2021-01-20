@@ -9,12 +9,9 @@ use PDO;
 
 abstract class AbstractTranslator
 {
-    /** @var PDO */
-    protected $connection;
-
-    public function __construct(PDO $connection)
-    {
-        $this->connection = $connection;
+    public function __construct(
+        protected PDO $connection
+    ) {
     }
 
     protected function quote($value): string
@@ -70,7 +67,7 @@ abstract class AbstractTranslator
                 $quoted[$key] = $value;
             } elseif ($this->extractSqlFunction($value) !== null) {
                 $quoted[$key] = $this->quoteIdentifiersFromSqlFunctionString($query, $value);
-            } elseif (strpos($value, '.') !== false) {
+            } elseif (str_contains($value, '.')) {
                 [$tableName, $tableKey] = explode('.', $value);
                 $quoted[$key] = $this->quoteIdentifierPrefixedKey($tableName, $tableKey);
             } else {

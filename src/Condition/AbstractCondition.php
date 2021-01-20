@@ -9,11 +9,8 @@ abstract class AbstractCondition
     public const TYPE_AND = 'AND';
     public const TYPE_OR = 'OR';
 
-    /** @var string */
-    protected $type = self::TYPE_AND;
-
-    /** @var bool */
-    protected $valueIsKey = false;
+    protected string $type = self::TYPE_AND;
+    protected bool $valueIsKey = false;
 
     public function setType(string $type): void
     {

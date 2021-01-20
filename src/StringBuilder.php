@@ -6,11 +6,10 @@ class StringBuilder
 {
     protected const DEFAULT_GLUE = ' ';
 
-    /** @var string */
-    protected $glue;
+    protected string $glue;
 
     /** @var string[] */
-    protected $parts = [];
+    protected array $parts = [];
 
     public function __construct(string $glue = self::DEFAULT_GLUE)
     {

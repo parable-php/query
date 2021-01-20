@@ -8,14 +8,11 @@ use Parable\Query\Condition\ValueCondition;
 
 class Join
 {
-    /** @var string */
-    protected $tableName;
-
-    /** @var string|null */
-    protected $tableAlias;
+    protected string $tableName;
+    protected ?string $tableAlias;
 
     /** @var ValueCondition[]|CallableCondition[] */
-    protected $onConditions = [];
+    protected array $onConditions = [];
 
     public function __construct(string $tableName, ?string $tableAlias = null)
     {
@@ -49,8 +46,7 @@ class Join
             $joinKey,
             $comparator,
             $value,
-            AbstractCondition::TYPE_AND,
-            false
+            AbstractCondition::TYPE_AND
         );
 
         return $this;
@@ -63,8 +59,7 @@ class Join
             $joinKey,
             $comparator,
             $value,
-            AbstractCondition::TYPE_OR,
-            false
+            AbstractCondition::TYPE_OR
         );
 
         return $this;
@@ -77,8 +72,7 @@ class Join
             $key,
             'IS NULL',
             null,
-            AbstractCondition::TYPE_AND,
-            false
+            AbstractCondition::TYPE_AND
         );
 
         return $this;
@@ -91,8 +85,7 @@ class Join
             $key,
             'IS NOT NULL',
             null,
-            AbstractCondition::TYPE_AND,
-            false
+            AbstractCondition::TYPE_AND
         );
 
         return $this;
@@ -147,9 +140,6 @@ class Join
         return $this;
     }
 
-    /**
-     * @return ValueCondition[]|CallableCondition[]
-     */
     public function getOnConditions(): array
     {
         return $this->onConditions;

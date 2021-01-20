@@ -18,41 +18,31 @@ class Query
 
     public const PRIMARY_KEY_INDEX = 'PRIMARY_KEY_INDEX_VALUE';
 
-    /** @var string */
-    protected $type;
-
-    /** @var string */
-    protected $tableName;
-
-    /** @var string|null */
-    protected $tableAlias;
+    protected string $type;
+    protected string $tableName;
+    protected ?string $tableAlias;
 
     /** @var string[] */
-    protected $columns = [];
+    protected array $columns = [];
 
     /** @var ValueCondition[]|CallableCondition[] */
-    protected $whereConditions = [];
+    protected array $whereConditions = [];
 
     /** @var Join[][] */
-    protected $joins = [];
+    protected array $joins = [];
 
-    /** @var int|null */
-    protected $limit;
-
-    /** @var int|null */
-    protected $offset;
-
-    /** @var string|null */
-    protected $forceIndex;
+    protected ?int $limit = null;
+    protected ?int $offset = null;
+    protected ?string $forceIndex = null;
 
     /** @var string[] */
-    protected $groupBy = [];
+    protected array $groupBy = [];
 
     /** @var string[] */
-    protected $orderBy = [];
+    protected array $orderBy = [];
 
     /** @var ValueSet[] */
-    protected $valueSets = [];
+    protected array $valueSets = [];
 
     public function __construct(
         string $type,

@@ -4,31 +4,14 @@ namespace Parable\Query\Condition;
 
 class ValueCondition extends AbstractCondition
 {
-    /** @var string */
-    protected $tableName;
-
-    /** @var string */
-    protected $key;
-
-    /** @var string */
-    protected $comparator;
-
-    /** @var mixed */
-    protected $value;
-
     public function __construct(
-        string $tableName,
-        string $key,
-        string $comparator,
-        $value = null,
+        protected string $tableName,
+        protected string $key,
+        protected string $comparator,
+        protected $value = null,
         ?string $type = null,
         bool $valueIsKey = false
     ) {
-        $this->tableName = $tableName;
-        $this->key = $key;
-        $this->comparator = $comparator;
-        $this->value = $value;
-
         if ($type !== null) {
             $this->setType($type);
         }

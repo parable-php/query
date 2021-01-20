@@ -10,12 +10,9 @@ use PDO;
 
 class Builder
 {
-    /** @var PDO */
-    protected $connection;
-
-    public function __construct(PDO $connection)
-    {
-        $this->connection = $connection;
+    public function __construct(
+        protected PDO $connection
+    ) {
     }
 
     public function build(Query $query): string
@@ -31,7 +28,9 @@ class Builder
             return $translator->translate($query);
         }
 
-        throw new Exception('Could not find suitable translator for query with type: ' . $query->getType());
+        throw new Exception(
+            'Could not find suitable translator for query with type: ' . $query->getType()
+        );
     }
 
     /**

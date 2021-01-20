@@ -12,8 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class ConditionsTest extends TestCase
 {
-    /** @var SelectTranslator */
-    protected $translator;
+    protected SelectTranslator $translator;
 
     public function testSetInvalidType(): void
     {
