@@ -1,6 +1,6 @@
 # Parable Query
 
-[![Build Status](https://travis-ci.com/parable-php/query.svg?branch=master)](https://travis-ci.com/parable-php/query)
+[![Workflow Status](https://github.com/parable-php/query/workflows/Tests/badge.svg)](https://github.com/parable-php/query/actions?query=workflow%3ATests)
 [![Latest Stable Version](https://poser.pugx.org/parable-php/query/v/stable)](https://packagist.org/packages/parable-php/query)
 [![Latest Unstable Version](https://poser.pugx.org/parable-php/query/v/unstable)](https://packagist.org/packages/parable-php/query)
 [![License](https://poser.pugx.org/parable-php/query/license)](https://packagist.org/packages/parable-php/query)
