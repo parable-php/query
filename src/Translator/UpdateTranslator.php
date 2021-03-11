@@ -37,6 +37,6 @@ class UpdateTranslator extends AbstractTranslator implements TranslatorInterface
             $this->buildWhere($query)
         );
 
-        return $queryParts->toString();
+        return (string)$queryParts;
     }
 }

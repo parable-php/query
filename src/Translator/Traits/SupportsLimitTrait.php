@@ -17,7 +17,7 @@ trait SupportsLimitTrait
 
         return sprintf(
             'LIMIT %s',
-            $queryParts->toString()
+            (string)$queryParts
         );
     }
 }

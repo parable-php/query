@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Tests;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\ValueSet;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -38,7 +38,7 @@ class ValueSetTest extends TestCase
      */
     public function testValueSetCreationFailsOnNonScalarValue($value, string $expectedMessage): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage($expectedMessage);
 
         new ValueSet([

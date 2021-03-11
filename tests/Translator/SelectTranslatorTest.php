@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Tests\Translator;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\Join;
 use Parable\Query\OrderBy;
 use Parable\Query\Query;
@@ -137,7 +137,7 @@ class SelectTranslatorTest extends TestCase
 
     public function testSetColumnsWithSumThrowsOnNoValue(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Function SUM requires a value to be passed.');
 
         $query = Query::select('table', 't');
@@ -310,7 +310,7 @@ class SelectTranslatorTest extends TestCase
 
     public function testMultipleOrderByWithSameKeysThrowsOnDifferentDirection(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Cannot define order by key twice with different directions.');
 
         $query = Query::select('table', 't');
@@ -418,7 +418,7 @@ class SelectTranslatorTest extends TestCase
 
     public function testWhereCallableNestedBreaksAfter5levels(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Recursion of callable WHERE clauses is too deep.');
 
         $query = Query::select('table', 't');
@@ -438,36 +438,36 @@ class SelectTranslatorTest extends TestCase
         $this->translator->translate($query);
     }
 
-    public function testEverySingleTraitOnSelectQueryTranslator(): void
-    {
-        $query = Query::select('users', 'u');
+public function testEverySingleTraitOnSelectQueryTranslator(): void
+{
+    $query = Query::select('users', 'u');
 
-        $query->setColumns('id','lastname','firstname','p.id','p.website');
-        $query->forceIndex(Query::PRIMARY_KEY_INDEX);
-        $query->where('lastname', '=', 'McTest');
-        $query->whereCallable(static function(Query $query) {
-            $query->where('firstname', '=', 'John');
-            $query->orWhere('firstname', '=', 'Amy');
-        });
+    $query->setColumns('id','lastname','firstname','p.id','p.website');
+    $query->forceIndex(Query::PRIMARY_KEY_INDEX);
+    $query->where('lastname', '=', 'McTest');
+    $query->whereCallable(static function(Query $query) {
+        $query->where('firstname', '=', 'John');
+        $query->orWhere('firstname', '=', 'Amy');
+    });
 
-        $join = new Join('profile', 'p');
-        $join->onKey('id', '=', 'user_id');
-        $join->onNull('updated_at');
+    $join = new Join('profile', 'p');
+    $join->onKey('id', '=', 'user_id');
+    $join->onNull('updated_at');
 
-        $query->leftJoin($join);
+    $query->leftJoin($join);
 
-        $query->groupBy('lastname');
-        $query->orderBy(OrderBy::desc('id'));
-        $query->orderBy(OrderBy::asc('p.id', 'lastname'));
+    $query->groupBy('lastname');
+    $query->orderBy(OrderBy::desc('id'));
+    $query->orderBy(OrderBy::asc('p.id', 'lastname'));
 
-        $query->limit(50, 10);
+    $query->limit(50, 10);
 
-        self::assertTrue($this->translator->accepts($query));
-        self::assertSame(
-            "SELECT `u`.`id`, `u`.`lastname`, `u`.`firstname`, `p`.`id`, `p`.`website` FROM `users` `u` FORCE INDEX (PRIMARY) LEFT JOIN `profile` `p` ON (`u`.`id` = `p`.`user_id` AND `u`.`updated_at` IS NULL) WHERE `u`.`lastname` = 'McTest' AND (`u`.`firstname` = 'John' OR `u`.`firstname` = 'Amy') GROUP BY `u`.`lastname` ORDER BY `u`.`id` DESC, `p`.`id` ASC, `u`.`lastname` ASC LIMIT 50,10",
-            $this->translator->translate($query)
-        );
-    }
+    self::assertTrue($this->translator->accepts($query));
+    self::assertSame(
+        "SELECT `u`.`id`, `u`.`lastname`, `u`.`firstname`, `p`.`id`, `p`.`website` FROM `users` `u` FORCE INDEX (PRIMARY) LEFT JOIN `profile` `p` ON (`u`.`id` = `p`.`user_id` AND `u`.`updated_at` IS NULL) WHERE `u`.`lastname` = 'McTest' AND (`u`.`firstname` = 'John' OR `u`.`firstname` = 'Amy') GROUP BY `u`.`lastname` ORDER BY `u`.`id` DESC, `p`.`id` ASC, `u`.`lastname` ASC LIMIT 50,10",
+        $this->translator->translate($query)
+    );
+}
 
     public function testStringableThingsAreActuallyStringified(): void
     {

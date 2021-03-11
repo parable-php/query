@@ -2,6 +2,6 @@
 
 namespace Parable\Query;
 
-class Exception extends \Exception
+class QueryException extends \Exception
 {
 }

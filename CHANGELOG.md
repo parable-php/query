@@ -1,5 +1,11 @@
 # Parable PHP Query
 
+## 0.5.0
+
+- Added static analysis through psalm.
+- Renamed `Exception` to `QueryException` for clarity.
+- General php8 code style upgrades.
+
 ## 0.4.0
 
 _Changes_

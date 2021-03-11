@@ -6,15 +6,12 @@ class StringBuilder
 {
     protected const DEFAULT_GLUE = ' ';
 
-    protected string $glue;
-
     /** @var string[] */
     protected array $parts = [];
 
-    public function __construct(string $glue = self::DEFAULT_GLUE)
-    {
-        $this->glue = $glue;
-    }
+    public function __construct(
+        protected string $glue = self::DEFAULT_GLUE
+    ) {}
 
     public function prepend(...$parts): void
     {
@@ -44,7 +41,7 @@ class StringBuilder
     public function merge(self $queryParts): self
     {
         if ($this->glue !== $queryParts->getGlue()) {
-            throw new Exception('Cannot merge StringBuilder with different glues.');
+            throw new QueryException('Cannot merge StringBuilder with different glues.');
         }
 
         if ($queryParts->isEmpty()) {
@@ -56,7 +53,7 @@ class StringBuilder
         return $this;
     }
 
-    public function toString(): string
+    public function __toString(): string
     {
         return trim(implode($this->glue, array_filter($this->parts)));
     }

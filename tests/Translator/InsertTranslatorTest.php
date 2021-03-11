@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Tests\Translator;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\Query;
 use Parable\Query\Translator\InsertTranslator;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
@@ -94,7 +94,7 @@ class InsertTranslatorTest extends TestCase
 
     public function testNoValueSetsBreaks(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Insert queries must contain at least one value set.');
 
         $query = Query::insert('table', 't');
@@ -104,7 +104,7 @@ class InsertTranslatorTest extends TestCase
 
     public function testMultipleNonMatchingValueSetsBreaks(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Not all value sets match on keys: username');
 
         $query = Query::insert('table');

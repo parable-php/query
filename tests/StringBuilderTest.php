@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Tests;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\StringBuilder;
 use PHPUnit\Framework\TestCase;
 
@@ -15,14 +15,14 @@ class StringBuilderTest extends TestCase
         $parts->add('1');
         $parts->add('2');
 
-        self::assertSame('1 2', $parts->toString());
+        self::assertSame('1 2', $parts->__toString());
     }
 
     public function testFromArray(): void
     {
         $parts = StringBuilder::fromArray(['1', '2']);
 
-        self::assertSame('1 2', $parts->toString());
+        self::assertSame('1 2', $parts->__toString());
     }
 
     public function testPrependActuallyPrepends(): void
@@ -33,7 +33,7 @@ class StringBuilderTest extends TestCase
         $parts->add('2');
         $parts->prepend('3');
 
-        self::assertSame('3 1 2', $parts->toString());
+        self::assertSame('3 1 2', $parts->__toString());
     }
 
     public function testMergeWorksCorrectly(): void
@@ -43,7 +43,7 @@ class StringBuilderTest extends TestCase
 
         $partsMerged = $parts1->merge($parts2);
 
-        self::assertSame('1 2 3 4', $partsMerged->toString());
+        self::assertSame('1 2 3 4', $partsMerged->__toString());
     }
 
     public function testMergeBreaksWhenDifferentGluesDetected(): void
@@ -51,7 +51,7 @@ class StringBuilderTest extends TestCase
         $parts1 = StringBuilder::fromArray(['1', '2'], ' ');
         $parts2 = StringBuilder::fromArray(['3', '4'], ',');
 
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Cannot merge StringBuilder with different glues.');
 
         $parts1->merge($parts2);

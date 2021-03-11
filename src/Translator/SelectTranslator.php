@@ -37,7 +37,7 @@ class SelectTranslator extends AbstractTranslator implements TranslatorInterface
         if (!empty($query->getColumns())) {
             $quotedColumns = $this->quotePrefixedIdentifiersFromArray($query, $query->getColumns());
 
-            $queryParts->add(StringBuilder::fromArray($quotedColumns, ', ')->toString());
+            $queryParts->add((string)StringBuilder::fromArray($quotedColumns, ', '));
         } else {
             $queryParts->add('*');
         }
@@ -57,6 +57,6 @@ class SelectTranslator extends AbstractTranslator implements TranslatorInterface
             $this->buildLimit($query)
         );
 
-        return $queryParts->toString();
+        return (string)$queryParts;
     }
 }

@@ -40,6 +40,6 @@ class DeleteTranslator extends AbstractTranslator implements TranslatorInterface
             $this->buildLimit($query)
         );
 
-        return $queryParts->toString();
+        return (string)$queryParts;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Tests\Translator;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\Query;
 use Parable\Query\Translator\Traits\HasConditionsTrait;
 use Parable\Query\Translator\Traits\SupportsForceIndexTrait;
@@ -78,7 +78,7 @@ class UpdateTranslatorTest extends TestCase
 
     public function testNoValueSetsBreaks(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Update queries must contain exactly one value set, 0 provided.');
 
         $query = Query::update('table');
@@ -88,7 +88,7 @@ class UpdateTranslatorTest extends TestCase
 
     public function testMultipleValueSetsBreaks(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Update queries must contain exactly one value set, 2 provided.');
 
         $query = Query::update('table');

@@ -20,7 +20,7 @@ trait SupportsGroupByTrait
 
         return sprintf(
             'GROUP BY %s',
-            $groupParts->toString()
+            (string)$groupParts
         );
     }
 }

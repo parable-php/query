@@ -3,8 +3,8 @@
 namespace Parable\Query\Tests;
 
 use Parable\Query\Builder;
-use Parable\Query\Exception;
 use Parable\Query\Query;
+use Parable\Query\QueryException;
 use Parable\Query\Tests\Classes\NonsenseTranslator;
 use Parable\Query\ValueSet;
 use PDO;
@@ -102,7 +102,7 @@ class BuilderTest extends TestCase
 
     public function testNonsenseTypeQueryThrows(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Could not find suitable translator for query with type: NONSENSE');
 
         $this->builder->build(new Query('NONSENSE', 'users'));

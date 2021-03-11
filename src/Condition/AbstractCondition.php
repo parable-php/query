@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Condition;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 
 abstract class AbstractCondition
 {
@@ -16,8 +16,8 @@ abstract class AbstractCondition
     {
         $type = strtoupper($type);
 
-        if (!in_array($type, [self::TYPE_AND, self::TYPE_OR])) {
-            throw new Exception('Invalid where type provided: ' . $type);
+        if (!in_array($type, [self::TYPE_AND, self::TYPE_OR], true)) {
+            throw new QueryException('Invalid where type provided: ' . $type);
         }
 
         $this->type = $type;

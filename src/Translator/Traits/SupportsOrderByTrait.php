@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Translator\Traits;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\Query;
 use Parable\Query\StringBuilder;
 
@@ -21,7 +21,7 @@ trait SupportsOrderByTrait
 
             foreach ($quotedKeys as $key) {
                 if (isset($parts[$key]) && strpos($parts[$key], $orderBy->getDirection()) === false) {
-                    throw new Exception('Cannot define order by key twice with different directions.');
+                    throw new QueryException('Cannot define order by key twice with different directions.');
                 }
 
                 $parts[$key] = sprintf(
@@ -34,7 +34,7 @@ trait SupportsOrderByTrait
 
         return sprintf(
             'ORDER BY %s',
-            StringBuilder::fromArray($parts, ', ')->toString()
+            (string)StringBuilder::fromArray($parts, ', ')
         );
     }
 }

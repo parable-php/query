@@ -12,8 +12,7 @@ class Builder
 {
     public function __construct(
         protected PDO $connection
-    ) {
-    }
+    ) {}
 
     public function build(Query $query): string
     {
@@ -28,7 +27,7 @@ class Builder
             return $translator->translate($query);
         }
 
-        throw new Exception(
+        throw new QueryException(
             'Could not find suitable translator for query with type: ' . $query->getType()
         );
     }
