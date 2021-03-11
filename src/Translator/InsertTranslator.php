@@ -26,6 +26,6 @@ class InsertTranslator extends AbstractTranslator implements TranslatorInterface
             $this->buildValues($query)
         );
 
-        return $queryParts->toString();
+        return (string)$queryParts;
     }
 }

@@ -8,17 +8,13 @@ use Parable\Query\Condition\ValueCondition;
 
 class Join
 {
-    protected string $tableName;
-    protected ?string $tableAlias;
-
     /** @var ValueCondition[]|CallableCondition[] */
     protected array $onConditions = [];
 
-    public function __construct(string $tableName, ?string $tableAlias = null)
-    {
-        $this->tableName = $tableName;
-        $this->tableAlias = $tableAlias;
-    }
+    public function __construct(
+        protected string $tableName,
+        protected ?string $tableAlias = null
+    ) {}
 
     public function getTableName(): string
     {
@@ -32,11 +28,7 @@ class Join
 
     public function getTableAliasOrName(): string
     {
-        if ($this->tableAlias !== null) {
-            return $this->tableAlias;
-        }
-
-        return $this->getTableName();
+        return $this->tableAlias ?? $this->getTableName();
     }
 
     public function on(string $joinKey, string $comparator, string $value): self

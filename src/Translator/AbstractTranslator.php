@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Translator;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\Query;
 use Parable\Query\StringBuilder;
 use PDO;
@@ -11,8 +11,7 @@ abstract class AbstractTranslator
 {
     public function __construct(
         protected PDO $connection
-    ) {
-    }
+    ) {}
 
     protected function quote($value): string
     {
@@ -85,7 +84,7 @@ abstract class AbstractTranslator
         preg_match("#\((.+)\)#", $string, $values);
 
         if (!isset($values[1])) {
-            throw new Exception(sprintf(
+            throw new QueryException(sprintf(
                 'Function %s requires a value to be passed.',
                 $function
             ));
@@ -98,7 +97,7 @@ abstract class AbstractTranslator
         return sprintf(
             '%s(%s)',
             $function,
-            $quotedValues->toString()
+            (string)$quotedValues
         );
     }
 

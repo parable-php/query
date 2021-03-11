@@ -18,10 +18,6 @@ class Query
 
     public const PRIMARY_KEY_INDEX = 'PRIMARY_KEY_INDEX_VALUE';
 
-    protected string $type;
-    protected string $tableName;
-    protected ?string $tableAlias;
-
     /** @var string[] */
     protected array $columns = [];
 
@@ -38,21 +34,17 @@ class Query
     /** @var string[] */
     protected array $groupBy = [];
 
-    /** @var string[] */
+    /** @var OrderBy[] */
     protected array $orderBy = [];
 
     /** @var ValueSet[] */
     protected array $valueSets = [];
 
     public function __construct(
-        string $type,
-        string $tableName,
-        ?string $tableAlias = null
-    ) {
-        $this->type = $type;
-        $this->tableName = $tableName;
-        $this->tableAlias = $tableAlias;
-    }
+        protected string $type,
+        protected string $tableName,
+        protected ?string $tableAlias = null
+    ) {}
 
     public function getType(): string
     {

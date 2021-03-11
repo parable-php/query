@@ -18,7 +18,7 @@ trait SupportsJoinTrait
         $joinParts->merge($this->buildJoinsFromType($query, Query::JOIN_TYPE_INNER));
         $joinParts->merge($this->buildJoinsFromType($query, Query::JOIN_TYPE_LEFT));
 
-        return $joinParts->toString();
+        return (string)$joinParts;
     }
 
     protected function buildJoinsFromType(Query $query, string $type): StringBuilder
@@ -44,8 +44,8 @@ trait SupportsJoinTrait
             $joinParts->add(sprintf(
                 '%s JOIN %s ON (%s)',
                 $type,
-                $tableParts->toString(),
-                $conditionParts->toString()
+                (string)$tableParts,
+                (string)$conditionParts
             ));
         }
 

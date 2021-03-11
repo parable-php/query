@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Tests;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\OrderBy;
 use PHPUnit\Framework\TestCase;
 
@@ -10,7 +10,7 @@ class OrderTest extends TestCase
 {
     public function testOrderRequiresKeys(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Cannot create order without keys.');
 
         OrderBy::asc();

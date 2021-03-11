@@ -18,6 +18,6 @@ trait SupportsWhereTrait
             $conditionParts->prepend('WHERE');
         }
 
-        return $conditionParts->toString();
+        return (string)$conditionParts;
     }
 }

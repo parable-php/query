@@ -2,7 +2,7 @@
 
 namespace Parable\Query\Translator\Traits;
 
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\Query;
 use Parable\Query\StringBuilder;
 use Parable\Query\ValueSet;
@@ -19,7 +19,7 @@ trait SupportsValuesTrait
             return $this->buildInsertValues($query);
         }
 
-        throw new Exception('Query type ' . $query->getType() . ' does not support values.');
+        throw new QueryException('Query type ' . $query->getType() . ' does not support values.');
     }
 
     protected function buildUpdateVales(Query $query): string
@@ -27,7 +27,7 @@ trait SupportsValuesTrait
         $valueSets = $query->getValueSets();
 
         if ($query->countValueSets() !== 1) {
-            throw new Exception(sprintf(
+            throw new QueryException(sprintf(
                 'Update queries must contain exactly one value set, %d provided.',
                 count($valueSets)
             ));
@@ -51,13 +51,13 @@ trait SupportsValuesTrait
             ));
         }
 
-        return 'SET ' . $parts->toString();
+        return 'SET ' . (string)$parts;
     }
 
     protected function buildInsertValues(Query $query): string
     {
         if ($query->countValueSets() < 1) {
-            throw new Exception('Insert queries must contain at least one value set.');
+            throw new QueryException('Insert queries must contain at least one value set.');
         }
 
         $valueParts = new StringBuilder(', ');
@@ -66,7 +66,7 @@ trait SupportsValuesTrait
             $valueSetParts = StringBuilder::fromArray($this->quoteValuesFromArray($valueSet->getValues()), ', ');
             $valueParts->add(sprintf(
                 '(%s)',
-                $valueSetParts->toString()
+                (string)$valueSetParts
             ));
         }
 
@@ -79,8 +79,8 @@ trait SupportsValuesTrait
 
         return sprintf(
             '(%s) VALUES %s',
-            $keyParts->toString(),
-            $valueParts->toString()
+            (string)$keyParts,
+            (string)$valueParts
         );
     }
 
@@ -88,7 +88,7 @@ trait SupportsValuesTrait
      * @param ValueSet[] $valueSets
      *
      * @return string[]
-     * @throws Exception
+     * @throws QueryException
      */
     protected function getKeysFromValueSets(array $valueSets): array
     {
@@ -96,7 +96,7 @@ trait SupportsValuesTrait
 
         foreach ($valueSets as $valueSet) {
             if ($keys !== [] && $valueSet->getKeys() !== $keys) {
-                throw new Exception('Not all value sets match on keys: ' . implode(', ', $keys));
+                throw new QueryException('Not all value sets match on keys: ' . implode(', ', $keys));
             }
 
             $keys = $valueSet->getKeys();

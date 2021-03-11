@@ -4,9 +4,10 @@ namespace Parable\Query\Translator\Traits;
 
 use Parable\Query\Condition\CallableCondition;
 use Parable\Query\Condition\ValueCondition;
-use Parable\Query\Exception;
+use Parable\Query\QueryException;
 use Parable\Query\Query;
 use Parable\Query\StringBuilder;
+use Stringable;
 
 trait HasConditionsTrait
 {
@@ -14,12 +15,12 @@ trait HasConditionsTrait
      * @param ValueCondition[]|CallableCondition[] $conditions
      *
      * @return StringBuilder
-     * @throws Exception
+     * @throws QueryException
      */
     protected function buildConditions(Query $query, array $conditions, $recursion = 0): StringBuilder
     {
         if ($recursion >= 5) {
-            throw new Exception('Recursion of callable WHERE clauses is too deep.');
+            throw new QueryException('Recursion of callable WHERE clauses is too deep.');
         }
 
         $conditionParts = new StringBuilder();
@@ -73,7 +74,7 @@ trait HasConditionsTrait
         } elseif (is_array($condition->getValue())) {
             $value = sprintf(
                 '(%s)',
-                StringBuilder::fromArray($this->quoteValuesFromArray($condition->getValue()), ',')->toString()
+                (string)StringBuilder::fromArray($this->quoteValuesFromArray($condition->getValue()), ',')
             );
         } elseif ($this->isStringLike($condition->getValue())) {
             $value = $this->quote($condition->getValue());
@@ -89,14 +90,7 @@ trait HasConditionsTrait
 
     private function isStringLike($value): bool
     {
-        if (is_string($value)) {
-            return true;
-        }
-
-        if (is_object($value) && method_exists($value, '__toString')) {
-            return true;
-        }
-
-        return false;
+        return is_string($value)
+            || $value instanceof Stringable;
     }
 }

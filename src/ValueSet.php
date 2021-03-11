@@ -16,7 +16,7 @@ class ValueSet
     public function addValue(string $key, $value): self
     {
         if (!is_scalar($value) && !is_null($value)) {
-            throw new Exception(sprintf(
+            throw new QueryException(sprintf(
                 'Value is of invalid type: %s',
                 gettype($value)
             ));

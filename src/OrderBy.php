@@ -17,7 +17,7 @@ class OrderBy
         $this->direction = $direction;
 
         if (count($keys) === 0) {
-            throw new Exception('Cannot create order without keys.');
+            throw new QueryException('Cannot create order without keys.');
         }
 
         $this->keys = $keys;
