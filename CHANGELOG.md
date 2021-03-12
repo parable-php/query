@@ -1,5 +1,10 @@
 # Parable PHP Query
 
+## 1.0.1
+
+_Changes_
+- Small static analysis fix.
+
 ## 1.0.0
 
 It's time! Finally a 1.0.0 release, locking the interface in place for at least a while.

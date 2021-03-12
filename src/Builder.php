@@ -5,6 +5,7 @@ namespace Parable\Query;
 use Parable\Query\Translators\DeleteTranslator;
 use Parable\Query\Translators\InsertTranslator;
 use Parable\Query\Translators\SelectTranslator;
+use Parable\Query\Translators\TranslatorInterface;
 use Parable\Query\Translators\UpdateTranslator;
 use PDO;
 
