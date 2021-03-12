@@ -1,5 +1,13 @@
 # Parable PHP Query
 
+## 1.0.0
+
+It's time! Finally a 1.0.0 release, locking the interface in place for at least a while.
+
+_Changes_
+- Namespace `Translator` has been renamed to `Translators` for consistency.
+- Namespace `Condition` has been renamed to `Conditions` for consistency.
+
 ## 0.5.0
 
 - Added static analysis through psalm.

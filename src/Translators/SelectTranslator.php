@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace Parable\Query\Translator;
+namespace Parable\Query\Translators;
 
 use Parable\Query\Query;
 use Parable\Query\StringBuilder;
-use Parable\Query\Translator\Traits\HasConditionsTrait;
-use Parable\Query\Translator\Traits\SupportsForceIndexTrait;
-use Parable\Query\Translator\Traits\SupportsGroupByTrait;
-use Parable\Query\Translator\Traits\SupportsJoinTrait;
-use Parable\Query\Translator\Traits\SupportsLimitTrait;
-use Parable\Query\Translator\Traits\SupportsOrderByTrait;
-use Parable\Query\Translator\Traits\SupportsWhereTrait;
-use Parable\Query\TranslatorInterface;
+use Parable\Query\Translators\Traits\HasConditionsTrait;
+use Parable\Query\Translators\Traits\SupportsForceIndexTrait;
+use Parable\Query\Translators\Traits\SupportsGroupByTrait;
+use Parable\Query\Translators\Traits\SupportsJoinTrait;
+use Parable\Query\Translators\Traits\SupportsLimitTrait;
+use Parable\Query\Translators\Traits\SupportsOrderByTrait;
+use Parable\Query\Translators\Traits\SupportsWhereTrait;
+use Parable\Query\Translators\TranslatorInterface;
 
 class SelectTranslator extends AbstractTranslator implements TranslatorInterface
 {

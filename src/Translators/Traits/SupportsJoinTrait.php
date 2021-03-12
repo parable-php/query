@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Parable\Query\Translator\Traits;
+namespace Parable\Query\Translators\Traits;
 
 use Parable\Query\Query;
 use Parable\Query\StringBuilder;

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Parable\Query\Translator\Traits;
+namespace Parable\Query\Translators\Traits;
 
-use Parable\Query\Condition\CallableCondition;
-use Parable\Query\Condition\ValueCondition;
+use Parable\Query\Conditions\CallableCondition;
+use Parable\Query\Conditions\ValueCondition;
 use Parable\Query\QueryException;
 use Parable\Query\Query;
 use Parable\Query\StringBuilder;

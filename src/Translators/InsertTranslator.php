@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Parable\Query\Translator;
+namespace Parable\Query\Translators;
 
 use Parable\Query\Query;
 use Parable\Query\StringBuilder;
-use Parable\Query\Translator\Traits\SupportsValuesTrait;
-use Parable\Query\TranslatorInterface;
+use Parable\Query\Translators\Traits\SupportsValuesTrait;
+use Parable\Query\Translators\TranslatorInterface;
 
 class InsertTranslator extends AbstractTranslator implements TranslatorInterface
 {

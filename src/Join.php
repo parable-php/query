@@ -2,9 +2,9 @@
 
 namespace Parable\Query;
 
-use Parable\Query\Condition\AbstractCondition;
-use Parable\Query\Condition\CallableCondition;
-use Parable\Query\Condition\ValueCondition;
+use Parable\Query\Conditions\AbstractCondition;
+use Parable\Query\Conditions\CallableCondition;
+use Parable\Query\Conditions\ValueCondition;
 
 class Join
 {

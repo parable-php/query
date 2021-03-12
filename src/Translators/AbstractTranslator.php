@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Parable\Query\Translator;
+namespace Parable\Query\Translators;
 
 use Parable\Query\QueryException;
 use Parable\Query\Query;

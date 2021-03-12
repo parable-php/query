@@ -2,10 +2,10 @@
 
 namespace Parable\Query;
 
-use Parable\Query\Translator\DeleteTranslator;
-use Parable\Query\Translator\InsertTranslator;
-use Parable\Query\Translator\SelectTranslator;
-use Parable\Query\Translator\UpdateTranslator;
+use Parable\Query\Translators\DeleteTranslator;
+use Parable\Query\Translators\InsertTranslator;
+use Parable\Query\Translators\SelectTranslator;
+use Parable\Query\Translators\UpdateTranslator;
 use PDO;
 
 class Builder

@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Parable\Query;
+namespace Parable\Query\Translators;
+
+use Parable\Query\Query;
 
 interface TranslatorInterface
 {

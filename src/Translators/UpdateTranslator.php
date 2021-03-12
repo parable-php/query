@@ -1,14 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Parable\Query\Translator;
+namespace Parable\Query\Translators;
 
 use Parable\Query\Query;
 use Parable\Query\StringBuilder;
-use Parable\Query\Translator\Traits\HasConditionsTrait;
-use Parable\Query\Translator\Traits\SupportsJoinTrait;
-use Parable\Query\Translator\Traits\SupportsValuesTrait;
-use Parable\Query\Translator\Traits\SupportsWhereTrait;
-use Parable\Query\TranslatorInterface;
+use Parable\Query\Translators\Traits\HasConditionsTrait;
+use Parable\Query\Translators\Traits\SupportsJoinTrait;
+use Parable\Query\Translators\Traits\SupportsValuesTrait;
+use Parable\Query\Translators\Traits\SupportsWhereTrait;
+use Parable\Query\Translators\TranslatorInterface;
 
 class UpdateTranslator extends AbstractTranslator implements TranslatorInterface
 {

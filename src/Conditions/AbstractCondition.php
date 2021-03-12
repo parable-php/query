@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Parable\Query\Condition;
+namespace Parable\Query\Conditions;
 
 use Parable\Query\QueryException;
 

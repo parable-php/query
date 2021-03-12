@@ -3,7 +3,7 @@
 namespace Parable\Query\Tests\Classes;
 
 use Parable\Query\Query;
-use Parable\Query\TranslatorInterface;
+use Parable\Query\Translators\TranslatorInterface;
 
 class NonsenseTranslator implements TranslatorInterface
 {

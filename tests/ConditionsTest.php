@@ -2,11 +2,11 @@
 
 namespace Parable\Query\Tests;
 
-use Parable\Query\Condition\CallableCondition;
+use Parable\Query\Conditions\CallableCondition;
 use Parable\Query\QueryException;
 use Parable\Query\Query;
-use Parable\Query\Translator\SelectTranslator;
-use Parable\Query\Translator\Traits\SupportsValuesTrait;
+use Parable\Query\Translators\SelectTranslator;
+use Parable\Query\Translators\Traits\SupportsValuesTrait;
 use PDO;
 use PHPUnit\Framework\TestCase;
 
